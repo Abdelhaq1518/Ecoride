@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/front/styles/css/index.css" />
+    <title>Covoitest</title>
+  </head>
+  <header>
+    <nav class="navbar navbar-expand-lg navbar-custom-warning">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="index.html">
+          <img src="assets/logo.svg" alt="EcoRide Logo" class="logo-ecoride" />
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNavDropdown"
+          aria-controls="navbarNavDropdown"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+          <ul class="navbar-nav ms-auto d-flex align-items-center">
+            <li class="nav-item">
+              <a class="nav-eco nav-link px-4" href="#">Les covoiturages</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-eco nav-link px-4" href="#">Connexion</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-eco nav-link px-4" href="#">Contact</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <body>
+    <h1 class="text-center mt-5">EcoRide</h1>
+    <section
+      class="presentation-searchbar container-fluid min-vh-100 d-flex flex-column flex-md-row"
+    >
+      <!-- Partie gauche : Présentation -->
+      <div class="col-md-6 d-flex flex-column justify-content-center p-4">
+        <h2 class="mb-4">C'est quoi EcoRide ?</h2>
+        <p>
+          EcoRide est une start-up en pleine expansion qui propose une
+          plateforme de covoiturage respectueuse de l’environnement. Spécialisée
+          dans les trajets en voiture — avec une priorité donnée aux véhicules
+          électriques, devant les thermiques et hybrides — EcoRide offre à ses
+          utilisateurs la possibilité d’être passager, conducteur ou les deux.
+          Les trajets permettent de gagner des crédits via une monnaie
+          virtuelle. Innovation, partage et réduction de l’empreinte carbone
+          sont les piliers d’EcoRide. <br /><br />
+          Avec EcoRide,
+          <strong>“on peut aller loin en se mettant au vert”.</strong>
+        </p>
+      </div>
+
+      <!-- Partie droite : Formulaire de recherche -->
+      <div
+        class="col-md-6 d-flex align-items-center justify-content-center p-4"
+      >
+        <form id="search-form" class="w-100">
+          <h3 class="mb-4">En voiture !</h3>
+
+          <div class="mb-3">
+            <label for="departure" class="form-label">Adresse de départ</label>
+            <input type="text" class="form-control" id="departure" required />
+          </div>
+
+          <div class="mb-3">
+            <label for="arrival" class="form-label">Adresse d'arrivée</label>
+            <input type="text" class="form-control" id="arrival" required />
+          </div>
+
+          <div class="mb-3">
+            <label for="date" class="form-label">Date du trajet</label>
+            <input type="date" class="form-control" id="date" required />
+          </div>
+
+          <button type="submit" class="btn btn-success w-100">
+            Rechercher
+          </button>
+
+          <!-- Résultats -->
+          <div id="results" class="mt-4 d-none">
+            <!-- Résultats insérés dynamiquement par JS -->
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section class="container py-5">
+      <h2 class="text-center mb-5">Nos valeurs</h2>
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="gallery-img-container">
+            <img
+              src="assets/img/img5.webp"
+              alt="main portant un chargeur de véhicule électrique"
+              class="gallery-img"
+            />
+            <span class="gallery-text">Écologique</span>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="gallery-img-container">
+            <img
+              src="assets/img/img1.webp"
+              alt="berline électrique noire en cours de chargement"
+              class="gallery-img"
+            />
+            <span class="gallery-text">Pratique</span>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="gallery-img-container">
+            <img
+              src="assets/img/img3.webp"
+              alt="groupe joyeux en voiture"
+              class="gallery-img"
+            />
+            <span class="gallery-text">Convivial</span>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="gallery-img-container">
+            <img
+              src="assets/img/img6.webp"
+              alt="Deux personnes assises dans une berline confortable"
+              class="gallery-img"
+            />
+            <span class="gallery-text">confortable</span>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="gallery-img-container">
+            <img
+              src="assets/img/img2.webp"
+              alt="femme accédant à la borne de rechargement de son véhicule"
+              class="gallery-img"
+            />
+            <span class="gallery-text">Accessible</span>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="gallery-img-container">
+            <img
+              src="assets/img/img4.webp"
+              alt="un passager montre une image sur son téléphone au conducteur"
+              class="gallery-img"
+            />
+            <span class="gallery-text">Solidaire</span>
+          </div>
+        </div>
+      </div>
+    </section>
+    <footer class="custom-footer text-center text-md-start mt-5 py-4 px-3">
+      <div
+        class="container d-md-flex justify-content-between align-items-center"
+      >
+        <div
+          class="mb-3 mb-md-0 text-muted small d-flex align-items-center gap-2"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="currentColor"
+            class="bi bi-c-circle"
+            viewBox="0 0 16 16"
+            aria-hidden="true"
+          >
+            <path
+              d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zM0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8z"
+            />
+            <path
+              d="M10.079 10.11a.5.5 0 0 0 .764.643 4.001 4.001 0 1 1 0-5.506.5.5 0 1 0-.764.643A3 3 0 1 0 10.08 10.11z"
+            />
+          </svg>
+          <span>2025 Abde-lhake AIT SAID, tous droits réservés.</span>
+        </div>
+        <div class="d-flex gap-3">
+          <a href="#" class="footer-link">Mentions légales</a>
+          <a href="#" class="footer-link">Politique de confidentialité</a>
+        </div>
+      </div>
+    </footer>
+    <script src="../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

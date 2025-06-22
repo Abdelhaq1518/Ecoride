@@ -1,0 +1,15 @@
+@import "typography";
+
+// 🎨 Palette personnalisée
+$primary: #89c4a3;
+$secondary: #7e998e; // Gris-vert neutre
+$success: #5ca47a; // Vert succès doux
+$info: #5c8d99; // Bleu doux/gris
+$warning: #d3aa5c; // Jaune doux
+$danger: #c85c5c; // Rouge atténué
+$light: #9ba6f3; // Fond très clair, jamais blanc pur
+$dark: #2b2f2e; // Gris anthracite
+
+// 🌿 Polices système
+$font-family-sans-serif: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+  "Helvetica Neue", Arial, sans-serif;

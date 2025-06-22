@@ -1,0 +1,27 @@
+# --- Node & Vite ---
+node_modules/
+dist/
+.vite/
+
+# --- Sass cache ---
+.sass-cache/
+
+# --- Environnement / sécurité ---
+.env
+.env.local
+.env.*.local
+back/dev/db.php
+back/dev/*.php
+
+# --- Logs ---
+*.log
+
+# --- IDE / OS fichiers ---
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# --- Autres fichiers temporaires ---
+*.tmp
+*.bak
