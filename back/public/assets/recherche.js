@@ -69,10 +69,10 @@ function handleSearch(e) {
 
       displayTrajets(data.trajets);
 
-      if (data.message) {
+      if (data.note) {
         resultsDiv.insertAdjacentHTML(
           "beforeend",
-          `<div class="alert alert-warning mb-4"><strong>Note :</strong> ${data.message}</div>`
+          `<div class="alert alert-warning mb-4"><strong>Note :</strong> ${data.note}</div>`
         );
       }
     })
@@ -88,10 +88,13 @@ function displayTrajets(trajets) {
   const resultsDiv = document.getElementById("results");
 
   trajets.forEach((trajet) => {
+    console.log("Trajet :", trajet); // Pour déboguer
+
     const photo =
       trajet.photo?.trim() !== ""
         ? `assets/img/${trajet.photo}`
         : `assets/img/default-user.webp`;
+
     const typeTrajet =
       trajet.type_trajet === "ecologique" ? " Écologique" : " Standard";
 
@@ -107,6 +110,7 @@ function displayTrajets(trajets) {
     const heureArrivee = trajet.heure_arrivee?.substring(0, 5) || "?";
     const noteMoyenne = trajet.note_moyenne_conducteur || "Non noté";
 
+    // ✅ Attention au bon nom de fichier ici :
     resultsDiv.insertAdjacentHTML(
       "beforeend",
       `
@@ -131,9 +135,9 @@ function displayTrajets(trajets) {
               <span class="badge badge-credits">${
                 trajet.cout_credits
               } crédits</span>
-              <button class="details-trajet" data-trajet-id="${
-                trajet.id
-              }">Détails</button>
+              <a href="details_trajets.php?id=${
+                trajet.covoiturage_id
+              }" class="btn btn-outline-success btn-sm">Détail</a>
             </div>
           </div>
           <div class="conducteur d-flex align-items-center gap-3">

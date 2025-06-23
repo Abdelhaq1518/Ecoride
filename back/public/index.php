@@ -20,5 +20,59 @@
       </p>
     </div>
 
+    <!-- Partie droite -->
+    <div class="col-md-6 d-flex align-items-center justify-content-center p-4">
+      <form id="search-form" class="w-100">
+        <h3 class="mb-4">En voiture !</h3>
 
+        <div class="mb-3">
+          <label for="departure" class="form-label">Adresse de départ</label>
+          <input type="text" class="form-control" id="depart" required />
+        </div>
+
+        <div class="mb-3">
+          <label for="arrival" class="form-label">Adresse d'arrivée</label>
+          <input type="text" class="form-control" id="arrivee" required />
+        </div>
+
+        <div class="mb-3">
+          <label for="date" class="form-label">Date du trajet</label>
+          <input type="date" class="form-control" id="date" required />
+        </div>
+
+        <button type="submit" class="btn btn-success w-100">
+          Rechercher
+        </button>
+
+        <div id="results" class="mt-4 d-none"></div>
+      </form>
+    </div>
+  </section>
+
+  <section class="container py-5">
+    <h2 class="text-center mb-5">Nos valeurs</h2>
+    <div class="row g-4">
+      <?php
+      $valeurs = [
+        ["img5.webp", "main portant un chargeur de véhicule électrique", "Écologique"],
+        ["img1.webp", "berline électrique noire en cours de chargement", "Pratique"],
+        ["img3.webp", "groupe joyeux en voiture", "Convivial"],
+        ["img6.webp", "Deux personnes assises dans une berline confortable", "Confortable"],
+        ["img2.webp", "femme accédant à la borne de rechargement", "Accessible"],
+        ["img4.webp", "passager montre une image sur son téléphone au conducteur", "Solidaire"]
+      ];
+
+    foreach ($valeurs as [$src, $alt, $texte]) {
+    echo "
+    <div class=\"col-md-4\">
+      <div class=\"gallery-img-container\">
+        <img src=\"assets/img/$src\" alt=\"$alt\" class=\"gallery-img\" />
+        <span class=\"gallery-text\">$texte</span>
+      </div>
+    </div>";
+}
+      ?>
+    </div>
+  </section>
+</main>
 <?php include '../includes/footer.php'; ?>
