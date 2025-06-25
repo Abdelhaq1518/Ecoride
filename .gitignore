@@ -13,7 +13,8 @@ dist/
 back/dev/db.php
 back/dev/*.php
 back/public/details_trajets.php
-back/public/get_trajets.php
+back/public/covoiturages.php
+covoiturages.css
 
 # --- Logs ---
 *.log
