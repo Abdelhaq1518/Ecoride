@@ -1,0 +1,91 @@
+/* Style général des cartes trajets */
+.trajet-result {
+  background-color: #f4efd7;
+  border: 1px solid #ccc;
+  border-radius: 1rem;
+  padding: 2rem 2rem 2rem 1rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  max-width: 100%;
+}
+
+/* Badges personnalisés */
+.badges-info .badge {
+  font-size: 0.85rem;
+  padding: 0.4rem 0.7rem;
+  border-radius: 0.5rem;
+  background-color: #f1ebeb;
+}
+
+/* Couleurs des badges spécifiques */
+.badge.type-trajet {
+  color: #0c5d15;
+  background-color: #e2f3e7;
+}
+
+.badge-places {
+  color: #7b75f0;
+  background-color: #eae9fd;
+}
+
+.badge-credits {
+  color: #911111;
+  background-color: #fae1e1;
+}
+
+/* Bouton détails */
+.details-btn {
+  background-color: #a8895c;
+  color: #fff;
+  padding: 0.5rem 1.2rem;
+  border: none;
+  border-radius: 0.6rem;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.details-btn:hover {
+  background-color: #c9aa71;
+  color: #2f2f2f;
+}
+
+.filters-form-wrapper {
+  width: 100%;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  background-color: #f4efd7;
+  border-radius: 1rem;
+  border: 1px solid #d3c6a5;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.filters-form .form-label {
+  font-weight: 600;
+  color: #3e362e;
+}
+
+.filters-form input,
+.filters-form select {
+  border-radius: 0.5rem;
+  border: 1px solid #ccc;
+  padding: 0.4rem 0.7rem;
+}
+
+.filters-form .mb-3 {
+  margin-right: 1rem;
+}
+
+/* Bouton Rechercher */
+.custom-rechercher {
+  background-color: #a8895c;
+  color: #fff;
+  font-weight: bold;
+  border-radius: 0.6rem;
+  transition: background-color 0.3s ease;
+  height: fit-content;
+}
+
+.custom-rechercher:hover {
+  background-color: #c9aa71;
+  color: #2f2f2f;
+}
