@@ -20,7 +20,7 @@
 
     <!-- Partie droite : formulaire -->
     <div class="col-md-6 d-flex align-items-center justify-content-center p-4">
-      <form id="search-form" class="w-100" method="post">
+      <form id="search-form" class="w-100" method="post" novalidate>
         <h3 class="mb-4">En voiture !</h3>
 
         <div class="mb-3">
@@ -80,6 +80,11 @@ document.getElementById("search-form").addEventListener("submit", function(e) {
   const arrivee = document.getElementById("arrivee").value.trim();
   const date = document.getElementById("date").value;
 
+  if (!depart || !arrivee || !date) {
+    alert("Tous les champs sont obligatoires.");
+    return;
+  }
+
   const form = document.createElement("form");
   form.method = "POST";
   form.action = "covoiturages.php";
@@ -99,4 +104,3 @@ document.getElementById("search-form").addEventListener("submit", function(e) {
 </script>
 
 <?php include '../includes/footer.php'; ?>
-
