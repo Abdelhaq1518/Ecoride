@@ -23,8 +23,20 @@
   background-color: #f1ebeb;
 }
 
-.badge.type-trajet {
+.badge-eco {
   color: #0c5d15;
+  background-color: #e2f3e7;
+  border-radius: 0.5rem;
+  padding: 0.4rem 0.7rem;
+  font-size: 0.85rem;
+}
+
+.badge-standard {
+  color: #4a4a4a;
+  background-color: #dbe4ec;
+  border-radius: 0.5rem;
+  padding: 0.4rem 0.7rem;
+  font-size: 0.85rem;
 }
 
 .badge-places {

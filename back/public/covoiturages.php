@@ -27,37 +27,49 @@ function rechercherTrajets($pdo, $depart, $arrivee, $date, $prix_max = null, $ec
         AND c.places_disponibles > 0
     ";
 
-    $params = [
-        'depart' => "%$depart%",
-        'arrivee' => "%$arrivee%",
-        'date' => $date
-    ];
-
     if ($prix_max !== null) {
         $sql .= " AND c.cout_credits <= :prix_max";
-        $params['prix_max'] = $prix_max;
     }
 
-    if ($ecolo !== null && ($ecolo === 'ecologique' || $ecolo === 'standard')) {
+    if ($ecolo !== null && in_array($ecolo, ['ecologique', 'écologique', 'standard'], true)) {
         $sql .= " AND c.type_trajet = :type_trajet";
-        $params['type_trajet'] = $ecolo;
     }
 
     if ($note_min !== null) {
         $sql .= " AND u.note_moyenne >= :note_min";
-        $params['note_min'] = $note_min;
     }
 
     if ($duree_max !== null) {
         $sql .= " AND TIMESTAMPDIFF(HOUR, c.heure_depart, c.heure_arrivee) <= :duree_max";
-        $params['duree_max'] = $duree_max;
     }
 
     $stmt = $pdo->prepare($sql);
-    $stmt->execute($params);
+
+    $stmt->bindValue(':depart', "%$depart%", PDO::PARAM_STR);
+    $stmt->bindValue(':arrivee', "%$arrivee%", PDO::PARAM_STR);
+    $stmt->bindValue(':date', $date, PDO::PARAM_STR);
+
+    if ($prix_max !== null) {
+        $stmt->bindValue(':prix_max', $prix_max, PDO::PARAM_INT);
+    }
+
+    if ($ecolo !== null && in_array($ecolo, ['ecologique', 'écologique', 'standard'], true)) {
+        $stmt->bindValue(':type_trajet', $ecolo, PDO::PARAM_STR);
+    }
+
+    if ($note_min !== null) {
+        $stmt->bindValue(':note_min', $note_min, PDO::PARAM_STR);
+    }
+
+    if ($duree_max !== null) {
+        $stmt->bindValue(':duree_max', $duree_max, PDO::PARAM_INT);
+    }
+
+    $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
+// Traitement du formulaire
 $depart = $_POST['depart'] ?? '';
 $arrivee = $_POST['arrivee'] ?? '';
 $date = $_POST['date'] ?? '';
@@ -96,6 +108,7 @@ if (empty($trajets)) {
 
 include '../includes/header.php';
 ?>
+
 <main class="container py-5">
     <h3 class="mb-4">Vos covoiturages</h3>
 
@@ -127,10 +140,20 @@ include '../includes/header.php';
 
             <div class="mb-3 me-3">
                 <label class="form-label" for="filter-note">Note min :</label>
-                <input type="number" class="form-control" step="0.1" name="note_min" id="filter-note" value="<?= h($note_min) ?>">
+                <input 
+                    type="number" 
+                    class="form-control" 
+                    step="1" 
+                    min="1" 
+                    max="5" 
+                    name="note_min" 
+                    id="filter-note" 
+                    value="<?= h($note_min) ?>"
+                    oninput="adjustStep(this)"
+                >
             </div>
 
-            <button type="submit" class="btn custom-rechercher align-self-end">Rechercher</button>
+            <button type="submit" class="btn custom-rechercher align-self-end mb-3">Rechercher</button>
         </form>
     </div>
 
@@ -142,9 +165,14 @@ include '../includes/header.php';
 
         <?php if (!empty($trajets)): ?>
             <div class="row row-cols-1 row-cols-md-2 g-4">
-                <?php foreach ($trajets as $trajet): ?>
-                    <div class="col">
-                        <div class="card trajet-result">
+                <?php foreach ($trajets as $trajet):
+                    $type_raw = $trajet['type_trajet'];
+                    $type = strtolower($type_raw);
+                    $type = str_replace('é', 'e', $type);
+                    $classe_badge = ($type === 'ecologique') ? 'badge-eco' : 'badge-standard';
+                ?>
+                    <div class="col d-flex">
+                        <div class="card trajet-result h-100 d-flex flex-column">
                             <div class="card-body">
                                 <h5 class="card-title fw-bold"><?= h($trajet['prenom']) ?> <?= h($trajet['nom']) ?></h5>
                                 <p class="card-text"><strong>Date :</strong> <?= date('d/m/Y', strtotime($trajet['date_depart'])) ?></p>
@@ -152,7 +180,9 @@ include '../includes/header.php';
                                 <p class="card-text"><strong>Arrivée estimée à</strong> <?= substr(h($trajet['heure_arrivee']), 0, 5) ?> - <?= h($trajet['adresse_arrivee']) ?></p>
 
                                 <div class="badges-info mb-3">
-                                    <span class="badge type-trajet"><?= ucfirst(h($trajet['type_trajet'])) ?></span>
+                                    <span class="badge <?= $classe_badge ?>">
+                                        <?= ucfirst(h($type_raw)) ?>
+                                    </span>
                                     <span class="badge badge-places"><?= h($trajet['places_disponibles']) ?> places</span>
                                     <span class="badge badge-credits"><?= h($trajet['cout_credits']) ?> crédits</span>
                                 </div>
@@ -176,5 +206,18 @@ include '../includes/header.php';
     </div>
 </main>
 
+<script>
+function adjustStep(input) {
+    let val = parseFloat(input.value);
+    if (val > 2) {
+        input.step = "0.1";
+    } else {
+        input.step = "1";
+        if (!Number.isInteger(val)) {
+            input.value = Math.round(val) || '';
+        }
+    }
+}
+</script>
 
 <?php include '../includes/footer.php'; ?>

@@ -11,7 +11,7 @@ $covoiturage_id = $_GET['id'] ?? null;
 <main class="container py-5">
 
 <?php
-if ($covoiturage_id) {
+if ($covoiturage_id && is_numeric($covoiturage_id)) {
     $stmt = $pdo->prepare("
         SELECT 
             c.*, 
@@ -22,10 +22,15 @@ if ($covoiturage_id) {
         LEFT JOIN voiture v ON c.vehicule_id = v.voiture_id
         WHERE c.covoiturage_id = :id
     ");
-    $stmt->execute(['id' => $covoiturage_id]);
+    $stmt->bindValue(':id', $covoiturage_id, PDO::PARAM_INT);
+    $stmt->execute();
     $trajet = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($trajet):
+        $type_raw = $trajet['type_trajet'];
+        $type = strtolower($type_raw);
+        $type = str_replace('é', 'e', $type);
+        $classe_badge = ($type === 'ecologique') ? 'badge-eco' : 'badge-standard';
 ?>
     <div class="trajet-result mx-auto">
       <div class="trajet-infos">
@@ -34,16 +39,16 @@ if ($covoiturage_id) {
           <p>Départ le <?= htmlspecialchars($trajet['date_depart']) ?> à <?= htmlspecialchars($trajet['heure_depart']) ?></p>
           <p>Arrivée estimée à <?= htmlspecialchars($trajet['heure_arrivee']) ?></p>
           <div class="badges-info d-flex flex-wrap gap-2 mt-2">
-            <span class="badge type-trajet"><?= ucfirst($trajet['type_trajet']) ?></span>
-            <span class="badge badge-places"><?= $trajet['places_disponibles'] ?> place(s)</span>
-            <span class="badge badge-credits"><?= $trajet['cout_credits'] ?> crédits</span>
+            <span class="badge <?= $classe_badge ?>"><?= ucfirst(htmlspecialchars($type_raw)) ?></span>
+            <span class="badge badge-places"><?= (int)$trajet['places_disponibles'] ?> place(s)</span>
+            <span class="badge badge-credits"><?= (int)$trajet['cout_credits'] ?> crédits</span>
           </div>
         </div>
 
         <div class="conducteur mt-2">
-          <img src="assets/img/<?= $trajet['photo'] ?? 'default-user.webp' ?>" class="conducteur-img" alt="Photo de <?= $trajet['pseudo'] ?>">
-          <p class="conducteur-pseudo"><strong><?= $trajet['pseudo'] ?></strong></p>
-          <p class="conducteur-note"><small>Note : <?= $trajet['note_moyenne_conducteur'] ?>/5</small></p>
+          <img src="assets/img/<?= htmlspecialchars($trajet['photo'] ?? 'default-user.webp') ?>" class="conducteur-img" alt="Photo de <?= htmlspecialchars($trajet['pseudo']) ?>">
+          <p class="conducteur-pseudo"><strong><?= htmlspecialchars($trajet['pseudo']) ?></strong></p>
+          <p class="conducteur-note"><small>Note : <?= htmlspecialchars($trajet['note_moyenne_conducteur']) ?>/5</small></p>
         </div>
       </div>
 
@@ -74,7 +79,8 @@ if ($covoiturage_id) {
           FROM preferences_conducteur
           WHERE utilisateur_id = :id
       ");
-      $stmtPref->execute(['id' => $trajet['createur_id']]);
+      $stmtPref->bindValue(':id', $trajet['createur_id'], PDO::PARAM_INT);
+      $stmtPref->execute();
       $prefs = $stmtPref->fetch(PDO::FETCH_ASSOC);
 
       if ($prefs): ?>
@@ -97,7 +103,7 @@ if ($covoiturage_id) {
         echo "<p>Trajet non trouvé.</p>";
     endif;
 } else {
-    echo "<p>Identifiant de trajet manquant.</p>";
+    echo "<p>Identifiant de trajet manquant ou invalide.</p>";
 }
 ?>
 

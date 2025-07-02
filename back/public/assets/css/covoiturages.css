@@ -18,9 +18,15 @@
 }
 
 /* Couleurs des badges spécifiques */
-.badge.type-trajet {
+
+.badge-eco {
   color: #0c5d15;
   background-color: #e2f3e7;
+}
+
+.badge-standard {
+  color: #4a4a4a;
+  background-color: #dbe4ec; /* Bleu très clair/gris bleuté */
 }
 
 .badge-places {
@@ -36,7 +42,7 @@
 /* Bouton détails */
 .details-btn {
   background-color: #a8895c;
-  color: #fff;
+  color: #ede0c8;
   padding: 0.5rem 1.2rem;
   border: none;
   border-radius: 0.6rem;
@@ -52,7 +58,7 @@
 .filters-form-wrapper {
   width: 100%;
   padding: 1.5rem;
-  margin-bottom: 2rem;
+  margin-bottom: 4rem;
   background-color: #f4efd7;
   border-radius: 1rem;
   border: 1px solid #d3c6a5;
@@ -78,7 +84,7 @@
 /* Bouton Rechercher */
 .custom-rechercher {
   background-color: #a8895c;
-  color: #fff;
+  color: #ede0c8;
   font-weight: bold;
   border-radius: 0.6rem;
   transition: background-color 0.3s ease;

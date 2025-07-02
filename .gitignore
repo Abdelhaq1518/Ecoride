@@ -12,11 +12,10 @@ dist/
 .env.*.local
 back/dev/db.php
 back/dev/*.php
-back/public/details_trajets.php
-back/public/covoiturages.php
-back/public/details_covoiturages.php
-covoiturages.css
-details_covoiturages.css
+
+
+
+
 
 # --- Logs ---
 *.log
