@@ -1,0 +1,75 @@
+.connexion-container {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: 2rem;
+  flex-wrap: wrap;
+  padding: 4rem 2rem;
+}
+
+/* Base commune */
+.form-block {
+  background-color: #f4efd7;
+  padding: 2rem;
+  border-radius: 2rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Bloc connexion */
+.bloc-connexion {
+  flex: 1 1 30%;
+  max-width: 30%;
+  min-width: 280px;
+}
+
+/* Bloc inscription */
+.bloc-inscription {
+  flex: 1 1 65%;
+  max-width: 65%;
+  min-width: 280px;
+}
+
+/* Titres */
+h4 {
+  margin-bottom: 1.5rem;
+  color: #2d4d46;
+}
+
+/* Étiquettes */
+label {
+  font-weight: 500;
+  color: #3a3a3a;
+}
+
+/* Inputs */
+input.form-control {
+  margin-bottom: 1rem;
+  border-radius: 1rem;
+  border: 1px solid #ccc;
+}
+
+/* Bouton personnalisé */
+.btn-custom {
+  background-color: #a8895c;
+  color: #ede0c8;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 0.5rem;
+  transition: background-color 0.3s ease;
+}
+
+.btn-custom:hover {
+  background-color: #c9aa71;
+  color: #2f2f2f;
+}
+
+/* Note de mot de passe */
+.password-note {
+  font-size: 0.9rem;
+  color: #666;
+  margin-top: -0.5rem;
+  margin-bottom: 1rem;
+}
