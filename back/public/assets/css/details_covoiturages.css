@@ -1,0 +1,118 @@
+.trajet-result {
+  background-color: #f4efd7;
+  border: 1px solid #ccc;
+  border-radius: 1rem;
+  max-width: 750px;
+  padding: 2rem 2rem 2rem 1rem; /* moins de padding à gauche */
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.trajet-infos {
+  display: flex;
+  justify-content: flex-start; /* Alignement à gauche */
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.badges-info .badge {
+  font-size: 0.85rem;
+  padding: 0.4rem 0.7rem;
+  border-radius: 0.5rem;
+  background-color: #f1ebeb;
+}
+
+.badge-eco {
+  color: #0c5d15;
+  background-color: #e2f3e7;
+  border-radius: 0.5rem;
+  padding: 0.4rem 0.7rem;
+  font-size: 0.85rem;
+}
+
+.badge-standard {
+  color: #4a4a4a;
+  background-color: #dbe4ec;
+  border-radius: 0.5rem;
+  padding: 0.4rem 0.7rem;
+  font-size: 0.85rem;
+}
+
+.badge-places {
+  color: #7b75f0;
+}
+
+.badge-credits {
+  color: #911111;
+}
+
+.conducteur {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.conducteur-img {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ddd;
+}
+
+.conducteur-pseudo,
+.conducteur-note {
+  margin: 0;
+  text-align: left;
+}
+/* Cadre véhicule*/
+.card-vehicule {
+  background-color: #a8895c;
+  border: 1px solid #96754b;
+  color: #f4ecd8; /* cornsilk - doux et lisible */
+  transition: background-color 0.3s ease;
+}
+
+.card-vehicule:hover {
+  background-color: #c9aa71;
+  color: #2f2f2f; /* texte sombre en hover pour garder un bon contraste */
+}
+
+/* Préférences conducteur*/
+
+.preferences {
+  background-color: #e6c2b3; /* beige rosé clair par défaut */
+  border: 1.5px solid #a67562; /* bordure marron foncé */
+  border-radius: 0.75rem;
+  padding: 1.5rem 2rem;
+  color: #5a3e31; /* texte marron chaud */
+  box-shadow: 0 3px 8px rgba(166, 115, 98, 0.4);
+  margin-top: 2rem;
+  font-size: 1rem;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.preferences:hover {
+  background-color: #d8b0a3; /* beige rosé foncé au hover */
+  box-shadow: 0 5px 15px rgba(166, 115, 98, 0.6);
+}
+
+.preferences h5 {
+  color: #6b4c3b; /* marron plus foncé pour le titre */
+  margin-bottom: 1rem;
+}
+.preferences ul {
+  padding-left: 1.2rem;
+}
+
+.preferences li {
+  margin-bottom: 0.5rem;
+}
+.preferences ul li {
+  color: #4b2e1f; /* marron plus marqué */
+  font-weight: 600; /* effet "gras" similaire à la section véhicule */
+  padding: 0.2rem 0;
+}
