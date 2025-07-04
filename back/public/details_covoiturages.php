@@ -1,12 +1,10 @@
 <?php
-require_once __DIR__ . '/../dev/db.php';
+$pageStyles = ['assets/css/details_covoiturages.css'];
 require_once __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/../dev/db.php';
 
 $covoiturage_id = $_GET['id'] ?? null;
 ?>
-
-<!-- Feuille de style spécifique -->
-<link rel="stylesheet" href="assets/css/details_covoiturages.css">
 
 <main class="container py-5">
 
@@ -42,6 +40,9 @@ if ($covoiturage_id && is_numeric($covoiturage_id)) {
             <span class="badge <?= $classe_badge ?>"><?= ucfirst(htmlspecialchars($type_raw)) ?></span>
             <span class="badge badge-places"><?= (int)$trajet['places_disponibles'] ?> place(s)</span>
             <span class="badge badge-credits"><?= (int)$trajet['cout_credits'] ?> crédits</span>
+            <?php if ((int)$trajet['places_disponibles'] <= 0): ?>
+              <span class="badge badge-complet">Complet</span>
+            <?php endif; ?>
           </div>
         </div>
 
