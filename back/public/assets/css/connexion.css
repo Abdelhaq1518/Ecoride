@@ -1,13 +1,15 @@
+/*Container des deux formulaires*/
+
 .connexion-container {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: stretch;
-  gap: 2rem;
+  gap: 4rem;
   flex-wrap: wrap;
-  padding: 4rem 2rem;
+  align-content: stretch;
+  min-height: 600px; /*  à retirer sur mobile via media query */
 }
 
-/* Base commune */
 .form-block {
   background-color: #f4efd7;
   padding: 2rem;
@@ -15,27 +17,48 @@
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
+  flex-grow: 1;
+  height: auto;
+  align-self: stretch;
+  box-sizing: border-box;
 }
 
-/* Bloc connexion */
 .bloc-connexion {
-  flex: 1 1 30%;
-  max-width: 30%;
-  min-width: 280px;
+  flex: 0 0 28%;
+  min-width: 260px;
+  margin-right: 4rem;
+  height: auto;
+  min-height: 100%;
+}
+.bloc-connexion form {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem; /* espace régulier entre groupes */
 }
 
-/* Bloc inscription */
+.bloc-connexion input.form-control {
+  margin-bottom: 3rem; /* plus aéré uniquement dans le bloc connexion */
+}
+
+/*Formulaire d'inscription*/
+
 .bloc-inscription {
-  flex: 1 1 65%;
-  max-width: 65%;
-  min-width: 280px;
+  flex: 1;
+  min-width: 300px;
+  margin-left: 4rem;
+  height: auto;
+  min-height: 100%;
+}
+.bloc-inscription button[type="submit"] {
+  margin-top: 4rem; /* ajuste selon besoin (ex: 1.5rem si nécessaire) */
 }
 
 /* Titres */
 h4 {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem; /* réduit un peu l'écart sous le titre */
   color: #2d4d46;
+  line-height: 1.2; /* optionnel, pour serrer la hauteur */
 }
 
 /* Étiquettes */
@@ -66,10 +89,31 @@ input.form-control {
   color: #2f2f2f;
 }
 
-/* Note de mot de passe */
+/* Note sur mot de passe */
 .password-note {
   font-size: 0.9rem;
   color: #666;
   margin-top: -0.5rem;
   margin-bottom: 1rem;
+}
+
+/* --- MEDIA QUERY pour responsive mobile --- */
+@media (max-width: 768px) {
+  .connexion-container {
+    min-height: auto; /* on enlève la min-height pour mobile */
+  }
+
+  .bloc-connexion,
+  .bloc-inscription {
+    flex: 1 1 100%; /* blocs prennent toute la largeur */
+    min-width: auto;
+    margin: 0 0 2rem 0; /* espacement vertical entre blocs */
+  }
+
+  .bloc-connexion {
+    margin-right: 0;
+  }
+  .bloc-inscription {
+    margin-left: 0;
+  }
 }

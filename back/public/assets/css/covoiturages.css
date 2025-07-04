@@ -38,6 +38,10 @@
   color: #911111;
   background-color: #fae1e1;
 }
+.badges-info .badge-complet {
+  background-color: #1a1a1a !important;
+  color: #cccccc !important;
+}
 
 /* Bouton détails */
 .details-btn {

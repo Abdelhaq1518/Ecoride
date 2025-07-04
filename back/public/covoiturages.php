@@ -24,7 +24,6 @@ function rechercherTrajets($pdo, $depart, $arrivee, $date, $prix_max = null, $ec
         WHERE c.adresse_depart LIKE :depart
         AND c.adresse_arrivee LIKE :arrivee
         AND c.date_depart = :date
-        AND c.places_disponibles > 0
     ";
 
     if ($prix_max !== null) {
@@ -112,7 +111,6 @@ include '../includes/header.php';
 <main class="container py-5">
     <h3 class="mb-4">Vos covoiturages</h3>
 
-    <!-- Filtres -->
     <div class="filters-form-wrapper">
         <form method="post" class="filters-form d-flex flex-wrap">
             <input type="hidden" name="depart" value="<?= h($depart) ?>">
@@ -157,7 +155,6 @@ include '../includes/header.php';
         </form>
     </div>
 
-    <!-- Résultats -->
     <div class="flex-grow-1">
         <?php if (!empty($note)): ?>
             <div class="alert alert-info mb-4"><?= h($note) ?></div>
@@ -185,6 +182,9 @@ include '../includes/header.php';
                                     </span>
                                     <span class="badge badge-places"><?= h($trajet['places_disponibles']) ?> places</span>
                                     <span class="badge badge-credits"><?= h($trajet['cout_credits']) ?> crédits</span>
+                                    <?php if ($trajet['places_disponibles'] <= 0): ?>
+                                    <span class="badge badge-complet">Complet</span>
+                                    <?php endif; ?>
                                 </div>
 
                                 <div class="d-flex align-items-center gap-3">

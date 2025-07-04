@@ -1,3 +1,5 @@
+/*Trajets disponibles*/
+
 .trajet-result {
   background-color: #f4efd7;
   border: 1px solid #ccc;
@@ -15,6 +17,7 @@
   flex-wrap: wrap;
   gap: 2rem;
 }
+/*badges*/
 
 .badges-info .badge {
   font-size: 0.85rem;
@@ -46,6 +49,16 @@
 .badge-credits {
   color: #911111;
 }
+
+.badge.badge-complet {
+  background-color: #1a1a1a !important;
+  color: #cccccc !important;
+  border-radius: 0.5rem;
+  padding: 0.4rem 0.7rem;
+  font-size: 0.85rem;
+  display: inline-block;
+}
+/*Section conducteur*/
 
 .conducteur {
   display: flex;
