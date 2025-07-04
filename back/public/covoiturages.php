@@ -1,7 +1,7 @@
 <?php
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
-
+$pageStyles = ['assets/css/covoiturages.css'];
 require_once __DIR__ . '/../dev/db.php';
 require_once __DIR__ . '/verif_doublons.php';
 
