@@ -10,6 +10,7 @@ dist/
 .env
 .env.local
 .env.*.local
+back/dev/
 back/dev/db.php
 back/dev/*.php
 
