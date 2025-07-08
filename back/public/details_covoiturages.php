@@ -113,7 +113,7 @@ if ($covoiturage_id && is_numeric($covoiturage_id)) {
             <?php if ((int)$trajet['places_disponibles'] <= 0): ?>
                 <button class="btn btn-secondary" disabled>Complet</button>
             <?php elseif (!$user_id): ?>
-                <a href="connexion.php" class="btn btn-primary">Se connecter / S'inscrire</a>
+                <a href="connexion.php" class="btn-custom">Se connecter / S'inscrire</a>
             <?php elseif ($a_deja_participe): ?>
                 <button class="btn btn-outline-success" disabled>Participation prise en compte</button>
             <?php else: ?>

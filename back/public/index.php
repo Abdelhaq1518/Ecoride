@@ -44,7 +44,7 @@
   </section>
 
   <!-- Valeurs EcoRide -->
-  <section class="container py-5">
+  <section class="container pt-3 pb-4">
     <h2 class="text-center mb-5">Nos valeurs</h2>
     <div class="row g-4">
       <?php
