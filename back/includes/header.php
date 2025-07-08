@@ -3,10 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="assets/index.css" />
+
+  <!-- Bootstrap 5.3.7 CSS : charger en premier -->
+  <link 
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" 
+    rel="stylesheet" 
+    integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" 
+    crossorigin="anonymous" 
+  />
+
+  <!-- CSS global perso -->
+  <link rel="stylesheet" href="/EcoRide/back/public/assets/css/index.css" />
 
   <?php
-  // Inclusion dynamique de CSS spécifiques à la page, si défini
+  // Inclusion dynamique des CSS spécifiques à la page, si défini
   if (!empty($pageStyles) && is_array($pageStyles)):
       foreach ($pageStyles as $cssFile):
   ?>
@@ -24,23 +34,13 @@
   ?>
 
   <title>EcoRide</title>
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-    integrity="sha384-ENjdO4Dr2bkBIFxQpeoJxE6U5eM+/3f+GpWQYl4nUOH3zYtD3Lz58GxIV5DkBx1Q"
-    crossorigin="anonymous"
-  />
 </head>
 <body>
   <header>
     <nav class="navbar navbar-expand-lg navbar-light navbar-custom-warning">
       <div class="container-fluid">
         <a class="navbar-brand" href="index.php">
-          <img
-            src="assets/logo.svg"
-            alt="EcoRide Logo"
-            class="logo-ecoride"
-          />
+          <img src="assets/logo.svg" alt="EcoRide Logo" class="logo-ecoride" />
         </a>
         <button
           class="navbar-toggler"
@@ -83,14 +83,12 @@
     </nav>
   </header>
 
-  <!-- Bootstrap JS (important for navbar toggler) -->
-  <script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+pm/8ujB0K/H16v/7WTr9dR1+OpDy"
+  <!-- Bootstrap 5.3.7 JS -->
+  <script 
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" 
+    integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" 
     crossorigin="anonymous"
   ></script>
 
   <!-- Routing script -->
-  <script src="/EcoRide/back/public/assets/js/routages.js"></script>
-</body>
-</html>
+  <script src="/EcoRide/back/public/assets/routages.js"></script>

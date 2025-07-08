@@ -125,7 +125,77 @@
   margin-bottom: 0.5rem;
 }
 .preferences ul li {
-  color: #4b2e1f; /* marron plus marqué */
-  font-weight: 600; /* effet "gras" similaire à la section véhicule */
+  color: #4b2e1f;
   padding: 0.2rem 0;
+}
+/* Bouton se connecter/s'inscrire*/
+
+.btn-custom {
+  background-color: rgb(180, 144, 91);
+  color: #ede0c8;
+  text-decoration: none;
+  border-radius: 1rem;
+  border: none;
+  padding: 0.5rem 1.2rem;
+  font-family: system-ui, sans-serif;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+  text-align: center;
+}
+
+.btn-custom:hover {
+  background-color: rgb(66, 41, 5);
+  color: #ede0c8;
+}
+/* Modale de participation (charte EcoRide) */
+
+.modal-content {
+  background-color: #f4efd7;
+  border-radius: 1rem;
+  border: none;
+  font-family: system-ui, sans-serif;
+  color: #2f2f2f;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+.modal-header,
+.modal-footer {
+  border: none;
+  background-color: transparent;
+}
+
+.modal-title {
+  font-weight: bold;
+  font-size: 1.4rem;
+  color: #4a3e2e;
+}
+
+/* Boutons de la modale */
+.modal-footer .btn {
+  border-radius: 1rem;
+  font-family: system-ui, sans-serif;
+  font-weight: 500;
+  padding: 0.5rem 1.2rem;
+  transition: all 0.3s ease;
+}
+
+.modal-footer .btn-primary {
+  background-color: #a8895c;
+  border: none;
+  color: white;
+}
+
+.modal-footer .btn-primary:hover {
+  background-color: #8c734f;
+}
+
+.modal-footer .btn-secondary {
+  background-color: transparent;
+  border: 2px solid #a8895c;
+  color: #a8895c;
+}
+
+.modal-footer .btn-secondary:hover {
+  background-color: #a8895c;
+  color: white;
 }
