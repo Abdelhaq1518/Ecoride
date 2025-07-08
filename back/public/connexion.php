@@ -1,6 +1,7 @@
 <?php
-require_once __DIR__ . '/../includes/header.php';
 session_start();
+require_once __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/../includes/csrf_token.php';
 ?>
 
 <!-- Feuille de style spécifique -->
@@ -35,6 +36,7 @@ session_start();
     <div class="form-block bloc-connexion">
       <h4 class="mb-4">Se connecter</h4>
       <form method="post" action="traitement_connexion.php">
+        <?= csrfInput() ?> <!-- CSRF token ajouté -->
         <div class="inputs-group">
           <div class="mb-3">
             <label for="pseudo" class="form-label">Pseudo</label>
@@ -52,9 +54,9 @@ session_start();
         <button type="submit" class="btn btn-custom w-100">SE CONNECTER</button>
         <?php if (isset($_SESSION['utilisateur'])): ?>
         <div class="mt-3 text-center">
-        <a href="deconnexion.php" class="btn btn-outline-secondary w-100">Se déconnecter</a>
-      </div>
-      <?php endif; ?>
+          <a href="deconnexion.php" class="btn btn-outline-secondary w-100">Se déconnecter</a>
+        </div>
+        <?php endif; ?>
       </form>
     </div>
 
@@ -62,6 +64,7 @@ session_start();
     <div class="form-block bloc-inscription">
       <h4 class="mb-4">S'inscrire</h4>
       <form method="post" action="traitement_inscription.php">
+        <?= csrfInput() ?> <!-- CSRF token ajouté -->
         <div class="row">
           <div class="col-md-6 mb-3">
             <label for="pseudo_insc" class="form-label">Pseudo</label>
@@ -95,3 +98,10 @@ session_start();
 </main>
 
 <?php require_once __DIR__ . '/../includes/footer.php'; ?>
+<?php
+if (isset($_SESSION['csrf_token'])) {
+    echo "<!-- Token CSRF de la session : " . $_SESSION['csrf_token'] . " -->";
+} else {
+    echo "<!-- Aucun token CSRF trouvé en session -->";
+}
+?>

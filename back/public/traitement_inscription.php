@@ -1,8 +1,17 @@
 <?php
 session_start();
+require_once __DIR__ . '/../includes/csrf_token.php';
 require_once __DIR__ . '/../dev/db.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    // Vérification du token CSRF
+    if (!isset($_POST['csrf_token']) || !verifyToken($_POST['csrf_token'])) {
+        $_SESSION['erreur'] = "Requête non autorisée (CSRF)";
+        header('Location: connexion.php');
+        exit;
+    }
+
     $pseudo = trim($_POST['pseudo'] ?? '');
     $email = trim($_POST['email'] ?? '');
     $password = $_POST['motdepasse'] ?? '';
@@ -75,9 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $pdo->commit();
 
-        // Message de succès + redirection vers connexion
         $_SESSION['success'] = "Bienvenue chez EcoRide ! Pour bien démarrer, vous bénéficiez de 20 crédits.";
-
         header('Location: connexion.php');
         exit;
 
