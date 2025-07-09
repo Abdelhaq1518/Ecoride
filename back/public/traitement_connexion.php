@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $_SESSION['success'] = "Bienvenue " . htmlspecialchars($utilisateur['pseudo']) . " !";
 
-            header('Location: ../public/connexion.php');
+            header('Location: ../public/espace_utilisateur.php');
             exit;
         } else {
             $_SESSION['erreur'] = "Identifiants incorrects.";
