@@ -16,12 +16,13 @@ body {
 .sidebar_espace {
   height: 100%;
   top: 0;
+  position: sticky;
   height: 100vh;
   overflow-y: auto;
   min-width: 220px;
 }
 
-/* Formulaires (hérités de connexion.css) */
+/* Formulaires */
 .form-block {
   background-color: #f4efd7;
   border-radius: 1rem;
@@ -90,9 +91,9 @@ textarea.form-control {
   transform: scale(1.02);
 }
 /* Préférences conducteur (hors formulaire) */
-.form-check {
-  background-color: #d4a373; /* sable doux au survol */
-  border: 1.5px solid #a67562;
+.form-preferences {
+  background-color: #d1c49b;
+  border: 1.5px solid #d4afa0;
   border-radius: 0.75rem;
   padding: 1.5rem 2rem;
   color: #5a3e31;
@@ -102,8 +103,8 @@ textarea.form-control {
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.form-check:hover {
-  background-color: #d7bea8; /* caramel soutenu dès le départ */
+.form-preferences:hover {
+  background-color: #bb9969; /* caramel soutenu dès le départ */
   box-shadow: 0 5px 15px rgba(166, 115, 98, 0.6);
 }
 
@@ -115,12 +116,12 @@ textarea.form-control {
 .sidebar_espace .nav-link.active,
 .sidebar_espace .nav-link:hover {
   background-color: #a8895c;
-  color: #e1dbdb;
+  color: #1a1919;
   border-radius: 0.5rem;
 }
 
 /* Cartes véhicules (issues de details_covoiturages.css) */
-.card-vehicule,
+
 .list-group-item {
   background-color: #f4efd7;
   border: 1px solid #d7c0a1;
@@ -129,9 +130,8 @@ textarea.form-control {
   transition: background-color 0.3s ease;
 }
 
-.card-vehicule:hover,
 .list-group-item:hover {
-  background-color: #c9aa71;
+  background-color: #b29157;
   color: #2f2f2f;
 }
 

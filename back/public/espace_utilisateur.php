@@ -8,7 +8,12 @@ if (!isset($_SESSION['utilisateur'])) {
     exit;
 }
 
-$stmt = $pdo->prepare("SELECT r.libelle FROM utilisateur_roles ur JOIN roles r ON ur.role_id = r.role_id WHERE ur.utilisateur_id = :id");
+$stmt = $pdo->prepare("
+    SELECT r.libelle
+    FROM utilisateur_roles ur
+    JOIN roles r ON ur.role_id = r.role_id
+    WHERE ur.utilisateur_id = :id
+");
 $stmt->bindValue(':id', $_SESSION['utilisateur']['id'], PDO::PARAM_INT);
 $stmt->execute();
 $roles = $stmt->fetchAll(PDO::FETCH_COLUMN);
@@ -28,14 +33,17 @@ $preferences = $stmtPrefs->fetch(PDO::FETCH_ASSOC);
 <link rel="stylesheet" href="assets/css/espace_utilisateur.css">
 
 <div class="full-height-container">
-
     <!-- Menu latéral -->
     <nav class="sidebar_espace p-3" style="min-width: 220px; min-height: 100vh;">
         <h5 class="mb-4">Mon espace</h5>
         <ul class="nav flex-column">
             <li class="nav-item"><a href="#" class="nav-link">Accueil</a></li>
             <li class="nav-item"><a href="#mes-vehicules" class="nav-link">Mes véhicules</a></li>
-            <li class="nav-item"><a href="preferences_conducteur.php" class="nav-link ">Mes préférences</a></li>
+
+            <?php if (in_array('chauffeur', $roles) || in_array('combo', $roles)): ?>
+                <li class="nav-item"><a href="preferences_conducteur.php" class="nav-link">Mes préférences</a></li>
+            <?php endif; ?>
+
             <li class="nav-item"><a href="#" class="nav-link">Ajouter un trajet</a></li>
             <li class="nav-item"><a href="#" class="nav-link ">Historique</a></li>
         </ul>
@@ -78,12 +86,12 @@ $preferences = $stmtPrefs->fetch(PDO::FETCH_ASSOC);
                 <a href="#" class="btn btn-secondary mb-2">Voir mes trajets réservés</a>
             <?php endif; ?>
 
-            <?php if (!in_array('chauffeur', $roles)): ?>
-                <a href="#" class="btn btn-choix fw-bold mt-3">Je souhaite devenir chauffeur</a>
+            <?php if (!in_array('chauffeur', $roles) && !in_array('combo', $roles)): ?>
+                <a href="devenir_chauffeur.php" class="btn btn-choix fw-bold mt-3">Je souhaite devenir chauffeur</a>
             <?php endif; ?>
 
-            <?php if (!in_array('passager', $roles)): ?>
-                <a href="#" class="btn btn-choix fw-bold mt-2">Je souhaite devenir passager</a>
+            <?php if (!in_array('passager', $roles) && !in_array('combo', $roles)): ?>
+                <a href="devenir_passager.php" class="btn btn-choix fw-bold mt-2">Je souhaite devenir passager</a>
             <?php endif; ?>
         </section>
 
@@ -145,20 +153,20 @@ $preferences = $stmtPrefs->fetch(PDO::FETCH_ASSOC);
 
                     <div class="col-12">
                         <h5>Préférences</h5>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="fumeur" id="fumeur" value="1">
-                            <label class="form-check-label" for="fumeur">Fumeur</label>
+                        <div class="form-preferences">
+                            <input class="form-preferences-input" type="checkbox" name="fumeur" id="fumeur" value="1">
+                            <label class="form-preferences-label" for="fumeur">Fumeur</label>
                         </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="animaux" id="animaux" value="1">
-                            <label class="form-check-label" for="animaux">Animaux acceptés</label>
+                        <div class="form-preferences">
+                            <input class="form-preferences-input" type="checkbox" name="animaux" id="animaux" value="1">
+                            <label class="form-preferences-label" for="animaux">Animaux acceptés</label>
                         </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="musique" id="musique" value="1">
-                            <label class="form-check-label" for="musique">Musique pendant le trajet</label>
+                        <div class="form-preferences">
+                            <input class="form-preferences-input" type="checkbox" name="musique" id="musique" value="1">
+                            <label class="form-preferences-label" for="musique">Musique pendant le trajet</label>
                         </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="discussion" id="discussion" value="1">
+                        <div class="form-preferences">
+                            <input class="form-input" type="checkbox" name="discussion" id="discussion" value="1">
                             <label class="form-check-label" for="discussion">Discussion pendant le trajet</label>
                         </div>
                         <div class="mt-2">

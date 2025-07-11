@@ -3,76 +3,73 @@ session_start();
 require_once __DIR__ . '/../dev/db.php';
 require_once __DIR__ . '/../includes/verify_csrf.php';
 
-// Vérifier que l'utilisateur est connecté
 if (!isset($_SESSION['utilisateur'])) {
-    $_SESSION['erreur'] = "Vous devez être connecté pour ajouter un véhicule.";
     header('Location: connexion.php');
     exit;
 }
 
-// Vérification méthode et CSRF
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    $_SESSION['erreur'] = "Requête non autorisée.";
-    header('Location: espace_utilisateur.php');
+$userId = $_SESSION['utilisateur']['id'];
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    validateCsrfOrDie();
+
+    // --- Données véhicule ---
+    $marque = trim($_POST['marque'] ?? '');
+    $modele = trim($_POST['modele'] ?? '');
+    $couleur = trim($_POST['couleur'] ?? '');
+    $energie = $_POST['energie'] ?? '';
+    $immatriculation = trim($_POST['immatriculation'] ?? '');
+    $places = (int)($_POST['places'] ?? 0);
+    $dateImmat = $_POST['date_immatriculation'] ?? '';
+
+    // --- Données préférences ---
+    $fumeur = isset($_POST['fumeur']) ? 1 : 0;
+    $animaux = isset($_POST['animaux']) ? 1 : 0;
+    $musique = isset($_POST['musique']) ? 1 : 0;
+    $discussion = $_POST['discussion'] ?? 'calme';
+    $autres = trim($_POST['autres_preferences'] ?? '');
+
+    // Insertion du véhicule
+    $stmtVehicule = $pdo->prepare("INSERT INTO voiture (utilisateur_id, marque, modele, couleur, energie, immatriculation, nb_places, date_immatriculation)
+                                   VALUES (:uid, :marque, :modele, :couleur, :energie, :immat, :places, :date_immat)");
+    $stmtVehicule->bindValue(':uid', $userId, PDO::PARAM_INT);
+    $stmtVehicule->bindValue(':marque', $marque);
+    $stmtVehicule->bindValue(':modele', $modele);
+    $stmtVehicule->bindValue(':couleur', $couleur);
+    $stmtVehicule->bindValue(':energie', $energie);
+    $stmtVehicule->bindValue(':immat', $immatriculation);
+    $stmtVehicule->bindValue(':places', $places, PDO::PARAM_INT);
+    $stmtVehicule->bindValue(':date_immat', $dateImmat);
+    $stmtVehicule->execute();
+
+    // Vérifier si l'utilisateur a déjà des préférences
+    $stmtCheck = $pdo->prepare("SELECT COUNT(*) FROM preferences_conducteur WHERE utilisateur_id = :uid");
+    $stmtCheck->bindValue(':uid', $userId, PDO::PARAM_INT);
+    $stmtCheck->execute();
+    $exists = $stmtCheck->fetchColumn() > 0;
+
+    if ($exists) {
+        // Mise à jour
+        $stmtUpdate = $pdo->prepare("UPDATE preferences_conducteur
+                                     SET fumeur = :fumeur, animaux = :animaux, musique = :musique,
+                                         discussion = :discussion, autres_preferences = :autres
+                                     WHERE utilisateur_id = :uid");
+    } else {
+        // Insertion
+        $stmtUpdate = $pdo->prepare("INSERT INTO preferences_conducteur (utilisateur_id, fumeur, animaux, musique, discussion, autres_preferences)
+                                     VALUES (:uid, :fumeur, :animaux, :musique, :discussion, :autres)");
+    }
+
+    $stmtUpdate->bindValue(':uid', $userId, PDO::PARAM_INT);
+    $stmtUpdate->bindValue(':fumeur', $fumeur, PDO::PARAM_INT);
+    $stmtUpdate->bindValue(':animaux', $animaux, PDO::PARAM_INT);
+    $stmtUpdate->bindValue(':musique', $musique, PDO::PARAM_INT);
+    $stmtUpdate->bindValue(':discussion', $discussion);
+    $stmtUpdate->bindValue(':autres', $autres);
+    $stmtUpdate->execute();
+
+    $_SESSION['success'] = "Véhicule et préférences enregistrés avec succès.";
+    header('Location: espace_utilisateur.php#mes-vehicules');
     exit;
 }
-validateCsrfOrDie();
 
-// Récupération et validation des données
-$marque          = trim($_POST['marque'] ?? '');
-$modele          = trim($_POST['modele'] ?? '');
-$couleur         = trim($_POST['couleur'] ?? '');
-$energie         = trim($_POST['energie'] ?? '');
-$immatriculation = trim($_POST['immatriculation'] ?? '');
-$nb_places       = intval($_POST['places'] ?? 0);
-$date_immat      = $_POST['date_immatriculation'] ?? null;
-
-if (!$marque || !$modele || !$energie || !$immatriculation || $nb_places <= 0 || !$date_immat) {
-    $_SESSION['erreur'] = "Tous les champs obligatoires doivent être remplis correctement.";
-    header('Location: espace_utilisateur.php');
-    exit;
-}
-
-try {
-    $stmt = $pdo->prepare("
-        INSERT INTO voiture (
-            utilisateur_id, 
-            marque, 
-            modele, 
-            couleur, 
-            energie, 
-            immatriculation, 
-            nb_places, 
-            date_immatriculation
-        ) VALUES (
-            :uid, 
-            :marque, 
-            :modele, 
-            :couleur, 
-            :energie, 
-            :immatriculation, 
-            :nb_places, 
-            :date
-        )
-    ");
-
-    $stmt->bindValue(':uid', $_SESSION['utilisateur']['id'], PDO::PARAM_INT);
-    $stmt->bindValue(':marque', $marque, PDO::PARAM_STR);
-    $stmt->bindValue(':modele', $modele, PDO::PARAM_STR);
-    $stmt->bindValue(':couleur', $couleur, PDO::PARAM_STR);
-    $stmt->bindValue(':energie', $energie, PDO::PARAM_STR);
-    $stmt->bindValue(':immatriculation', $immatriculation, PDO::PARAM_STR);
-    $stmt->bindValue(':nb_places', $nb_places, PDO::PARAM_INT);
-    $stmt->bindValue(':date', $date_immat, PDO::PARAM_STR);
-
-    $stmt->execute();
-
-    $_SESSION['success'] = "Véhicule ajouté avec succès.";
-    header('Location: espace_utilisateur.php');
-    exit;
-
-} catch (PDOException $e) {
-    $_SESSION['erreur'] = "Erreur lors de l'ajout du véhicule : " . $e->getMessage();
-    header('Location: espace_utilisateur.php');
-    exit;
-}

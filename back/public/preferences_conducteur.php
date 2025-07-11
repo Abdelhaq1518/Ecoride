@@ -8,6 +8,22 @@ if (!isset($_SESSION['utilisateur'])) {
     exit;
 }
 
+// ✅ Vérifie que l'utilisateur est chauffeur ou combo
+$stmt = $pdo->prepare("
+    SELECT r.libelle
+    FROM utilisateur_roles ur
+    JOIN roles r ON ur.role_id = r.role_id
+    WHERE ur.utilisateur_id = :id
+");
+$stmt->bindValue(':id', $_SESSION['utilisateur']['id'], PDO::PARAM_INT);
+$stmt->execute();
+$roles = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+if (!in_array('chauffeur', $roles) && !in_array('combo', $roles)) {
+    header('Location: espace_utilisateur.php');
+    exit;
+}
+
 $userId = $_SESSION['utilisateur']['id'];
 
 // Récupérer les préférences actuelles
@@ -111,7 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <textarea class="form-control" name="autres_preferences" id="autres_preferences" rows="3"><?= htmlspecialchars($pref['autres_preferences'] ?? '') ?></textarea>
                 </div>
 
-                <button type="submit" class="btn btn-primary">Enregistrer</button>
+                <button type="submit" class="btn btn-custom">Enregistrer</button>
             </form>
         </div>
     </div>
