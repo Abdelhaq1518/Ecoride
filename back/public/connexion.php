@@ -1,6 +1,6 @@
 <?php
-session_start();
 require_once __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/../includes/ini.php';
 require_once __DIR__ . '/../includes/csrf_token.php';
 ?>
 
@@ -98,10 +98,3 @@ require_once __DIR__ . '/../includes/csrf_token.php';
 </main>
 
 <?php require_once __DIR__ . '/../includes/footer.php'; ?>
-<?php
-if (isset($_SESSION['csrf_token'])) {
-    echo "<!-- Token CSRF de la session : " . $_SESSION['csrf_token'] . " -->";
-} else {
-    echo "<!-- Aucun token CSRF trouvé en session -->";
-}
-?>

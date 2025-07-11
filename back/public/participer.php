@@ -32,6 +32,30 @@ try {
         exit;
     }
 
+    // ⚠️ Empêcher la participation à son propre trajet
+    if ((int)$trajet['createur_id'] === (int)$user_id) {
+        $pdo->rollBack();
+        echo json_encode(['success' => false, 'message' => 'Vous ne pouvez pas participer à votre propre trajet.']);
+        exit;
+    }
+
+    // ⚠️ Vérifier si l'utilisateur a le rôle passager ou combo
+    $stmtRole = $pdo->prepare("
+        SELECT r.libelle
+        FROM utilisateur_roles ur
+        JOIN roles r ON ur.role_id = r.role_id
+        WHERE ur.utilisateur_id = :id
+    ");
+    $stmtRole->bindValue(':id', $user_id, PDO::PARAM_INT);
+    $stmtRole->execute();
+    $userRoles = $stmtRole->fetchAll(PDO::FETCH_COLUMN);
+
+    if (!in_array('passager', $userRoles) && !in_array('combo', $userRoles)) {
+        $pdo->rollBack();
+        echo json_encode(['success' => false, 'message' => 'Seuls les passagers peuvent participer à un trajet.']);
+        exit;
+    }
+
     // Vérifier si l'utilisateur participe déjà
     $stmtCheck = $pdo->prepare("SELECT COUNT(*) FROM participations WHERE utilisateur_id = :uid AND covoiturage_id = :cid");
     $stmtCheck->bindValue(':uid', $user_id, PDO::PARAM_INT);

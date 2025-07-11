@@ -1,3 +1,6 @@
+<?php
+require_once __DIR__ . '/ini.php'; 
+?>
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -5,7 +8,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Bootstrap 5.3.7 CSS : charger en premier -->
+  <!-- Bootstrap 5.3.7 CSS -->
   <link 
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" 
     rel="stylesheet" 
@@ -25,10 +28,10 @@
   <?php
       endforeach;
   else:
-    // Ancien fallback pour covoiturages.php si pas de $pageStyles défini
     if (basename($_SERVER['SCRIPT_NAME']) === 'covoiturages.php'):
   ?>
       <link rel="stylesheet" href="/EcoRide/back/public/assets/css/covoiturages.css" />
+      <link rel="stylesheet" href="/EcoRide/back/public/assets/css/espace_utilisateur.css" />
   <?php
     endif;
   endif;
@@ -60,31 +63,37 @@
             <li class="nav-item">
               <a 
                 class="nav-eco nav-link px-4 <?= basename($_SERVER['SCRIPT_NAME']) === 'covoiturages.php' ? 'active' : '' ?>" 
-                href="covoiturages.php" 
-                id="nav-covoiturages"
+                href="covoiturages.php"
               >Les covoiturages</a>
             </li>
             <li class="nav-item">
               <a 
                 class="nav-eco nav-link px-4 <?= basename($_SERVER['SCRIPT_NAME']) === 'connexion.php' ? 'active' : '' ?>" 
-                href="connexion.php" 
-                id="nav-connexion"
+                href="connexion.php"
               >Connexion</a>
             </li>
             <li class="nav-item">
               <a 
                 class="nav-eco nav-link px-4 <?= basename($_SERVER['SCRIPT_NAME']) === 'contact.php' ? 'active' : '' ?>" 
-                href="contact.php" 
-                id="nav-contact"
+                href="contact.php"
               >Contact</a>
             </li>
+
+            <?php if (!empty($_SESSION['utilisateur'])): ?>
+              <li class="nav-item">
+                <a 
+                  class="nav-eco nav-link px-4 <?= basename($_SERVER['SCRIPT_NAME']) === 'espace_utilisateur.php' ? 'active' : '' ?>" 
+                  href="espace_utilisateur.php"
+                >Mon espace</a>
+              </li>
+            <?php endif; ?>
           </ul>
         </div>
       </div>
     </nav>
   </header>
 
-  <!-- Bootstrap 5.3.7 JS -->
+  <!-- Bootstrap JS -->
   <script 
     src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" 
     integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" 

@@ -1,0 +1,150 @@
+/* === Espace utilisateur - Style === */
+
+/* Fond général */
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.full-height-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar_espace {
+  height: 100%;
+  top: 0;
+  position: sticky;
+  height: 100vh;
+  overflow-y: auto;
+  min-width: 220px;
+}
+
+/* Formulaires */
+.form-block {
+  background-color: #f4efd7;
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  margin-bottom: 2rem;
+}
+
+.form-label,
+label {
+  font-weight: 500;
+  color: #3a3a3a;
+}
+
+input.form-control,
+select.form-select,
+textarea.form-control {
+  border-radius: 0.5rem;
+  background-color: #faf9f4;
+  border: 1px solid #ccc;
+}
+
+.btn-custom {
+  background-color: #a8895c;
+  color: #ede0c8;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 0.5rem;
+  transition: background-color 0.3s ease;
+}
+
+.btn-custom:hover,
+.btn-outline-primary:hover,
+.btn-secondary:hover {
+  background-color: #8c734f;
+  color: #ede0c8;
+}
+.btn-add {
+  background-color: #b8743b; /* caramel soutenu dès le départ */
+  color: #fff6ea;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-add:hover {
+  background-color: #d4a373;
+  color: #2c1a08;
+  transform: scale(1.02);
+}
+.btn-choix {
+  background-color: #674b4b;
+  color: #e7dada;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-choix:hover {
+  background-color: #a37c7c; /* rose plus clair et chaleureux au survol */
+  color: #3b1c20; /* contraste pour le texte */
+  transform: scale(1.02);
+}
+/* Préférences conducteur (hors formulaire) */
+.form-preferences {
+  background-color: #d1c49b;
+  border: 1.5px solid #d4afa0;
+  border-radius: 0.75rem;
+  padding: 1.5rem 2rem;
+  color: #5a3e31;
+  box-shadow: 0 3px 8px rgba(166, 115, 98, 0.4);
+  margin-top: 2rem;
+  font-size: 1rem;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-preferences:hover {
+  background-color: #bb9969; /* caramel soutenu dès le départ */
+  box-shadow: 0 5px 15px rgba(166, 115, 98, 0.6);
+}
+
+/* Sidebar menu */
+.sidebar_espace {
+  background-color: #dad4b1;
+}
+
+.sidebar_espace .nav-link.active,
+.sidebar_espace .nav-link:hover {
+  background-color: #a8895c;
+  color: #1a1919;
+  border-radius: 0.5rem;
+}
+
+/* Cartes véhicules (issues de details_covoiturages.css) */
+
+.list-group-item {
+  background-color: #f4efd7;
+  border: 1px solid #d7c0a1;
+  color: #242014;
+  border-radius: 0.5rem;
+  transition: background-color 0.3s ease;
+}
+
+.list-group-item:hover {
+  background-color: #b29157;
+  color: #2f2f2f;
+}
+
+/* Boutons dans les alertes */
+.alert-success,
+.alert-danger {
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+
+/* Titres */
+h2,
+h4,
+h5 {
+  color: #3e3e3e;
+}
