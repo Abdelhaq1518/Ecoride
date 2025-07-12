@@ -9,9 +9,8 @@ $stmtVehicules = $pdo->prepare("SELECT voiture_id, marque, modele, nb_places, co
 $stmtVehicules->bindValue(':uid', $_SESSION['utilisateur']['id'], PDO::PARAM_INT);
 $stmtVehicules->execute();
 $vehicules = $stmtVehicules->fetchAll(PDO::FETCH_ASSOC);
-$csrfToken = generateToken();
 ?>
-
+<link rel="stylesheet" href="/EcoRide/back/public/assets/css/espace_utilisateur.css">';
 <div class="container mt-5">
     <h2>Ajouter un trajet</h2>
 
@@ -24,14 +23,14 @@ $csrfToken = generateToken();
         <?php unset($_SESSION['success']); endif; ?>
 
     <form method="post" action="traitement_ajout_trajet.php">
-        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
 
         <div class="row mb-3">
-            <div class="col">
+            <div class="col-md-6">
                 <label for="date_depart">Date de départ</label>
                 <input type="date" class="form-control" name="date_depart" required>
             </div>
-            <div class="col">
+            <div class="col-md-3">
                 <label for="heure_depart">Heure de départ</label>
                 <select class="form-control" name="heure_depart" required>
                     <?php for ($h = 0; $h < 24; $h++):
@@ -42,7 +41,7 @@ $csrfToken = generateToken();
                     endfor; ?>
                 </select>
             </div>
-            <div class="col">
+            <div class="col-md-3">
                 <label for="heure_arrivee">Heure d'arrivée</label>
                 <select class="form-control" name="heure_arrivee" required>
                     <?php for ($h = 0; $h < 24; $h++):
@@ -55,22 +54,26 @@ $csrfToken = generateToken();
             </div>
         </div>
 
-        <div class="mb-3">
-            <label for="lieu_depart">Adresse de départ</label>
-            <input type="text" class="form-control" name="lieu_depart" required>
-        </div>
-        <div class="mb-3">
-            <label for="lieu_arrivee">Adresse d'arrivée</label>
-            <input type="text" class="form-control" name="lieu_arrivee" required>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="lieu_depart">Adresse de départ</label>
+                <input type="text" class="form-control" name="lieu_depart" required>
+            </div>
+            <div class="col-md-6">
+                <label for="lieu_arrivee">Adresse d'arrivée</label>
+                <input type="text" class="form-control" name="lieu_arrivee" required>
+            </div>
         </div>
 
-        <div class="mb-3">
-            <label for="places_disponibles">Places disponibles</label>
-            <input type="number" class="form-control" name="places_disponibles" min="1" required>
-        </div>
-        <div class="mb-3">
-            <label for="cout_credits">Crédits à facturer</label>
-            <input type="number" class="form-control" name="cout_credits" min="1" required>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="places_disponibles">Places disponibles</label>
+                <input type="number" class="form-control" name="places_disponibles" min="1" required>
+            </div>
+            <div class="col-md-6">
+                <label for="cout_credits">Montant en crédits</label>
+                <input type="number" class="form-control" name="cout_credits" min="1" required>
+            </div>
         </div>
 
         <hr>
@@ -87,50 +90,52 @@ $csrfToken = generateToken();
             </div>
         </div>
 
-        <div id="blocVehiculeExistant" class="mb-4">
-            <label for="vehicule_id">Sélectionnez un véhicule</label>
-            <select class="form-control" name="vehicule_id">
-                <?php foreach ($vehicules as $vehicule): ?>
-                    <option value="<?= $vehicule['voiture_id'] ?>">
-                        <?= htmlspecialchars($vehicule['marque'] . ' ' . $vehicule['modele'] . ' - ' . $vehicule['nb_places'] . ' places - ' . $vehicule['couleur'] . ' - ' . $vehicule['date_immatriculation']) ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
+        <div class="row" id="blocVehiculeExistant">
+            <div class="col-md-12 mb-3">
+                <label for="vehicule_id">Sélectionnez un véhicule</label>
+                <select class="form-control" name="vehicule_id">
+                    <?php foreach ($vehicules as $vehicule): ?>
+                        <option value="<?= $vehicule['voiture_id'] ?>">
+                            <?= htmlspecialchars($vehicule['marque'] . ' ' . $vehicule['modele'] . ' - ' . $vehicule['nb_places'] . ' places - ' . $vehicule['couleur'] . ' - ' . $vehicule['date_immatriculation']) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
         </div>
 
         <div id="blocVehiculeLibre" style="display: none;">
             <div class="row">
-                <div class="col">
+                <div class="col-md-4">
                     <label>Marque</label>
                     <input type="text" name="vehicule_libre_marque" class="form-control">
                 </div>
-                <div class="col">
+                <div class="col-md-4">
                     <label>Modèle</label>
                     <input type="text" name="vehicule_libre_modele" class="form-control">
                 </div>
-                <div class="col">
+                <div class="col-md-4">
                     <label>Places</label>
                     <input type="number" name="vehicule_libre_places" class="form-control" min="1">
                 </div>
             </div>
             <div class="row mt-3">
-                <div class="col">
+                <div class="col-md-4">
                     <label>Couleur</label>
                     <input type="text" name="vehicule_libre_couleur" class="form-control">
                 </div>
-                <div class="col">
+                <div class="col-md-4">
                     <label>Type d'énergie</label>
                     <input type="text" name="vehicule_libre_energie" class="form-control">
                 </div>
-                <div class="col">
+                <div class="col-md-4">
                     <label>Date de 1re immatriculation</label>
-                    <input type="date" name="vehicule_libre_date_immatriculation" class="form-control">
+                    <input type="date" name="vehicule_libre_date_immatriculation" class="form-control" max="<?= date('Y-m-d') ?>">
                 </div>
             </div>
         </div>
 
-        <div class="mt-4">
-            <button type="submit" class="btn btn-success">Créer le trajet</button>
+        <div class="mt-4 text-center">
+            <button type="submit" class="btn btn-custom">Créer le trajet</button>
         </div>
     </form>
 </div>

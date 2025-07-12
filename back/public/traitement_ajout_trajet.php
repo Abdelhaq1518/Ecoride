@@ -144,6 +144,6 @@ $stmtDebit = $pdo->prepare("UPDATE utilisateurs SET credits = credits - 2 WHERE 
 $stmtDebit->bindValue(':id', $userId, PDO::PARAM_INT);
 $stmtDebit->execute();
 
-$_SESSION['success'] = "Trajet créé avec succès. 2 crédits ont été déduits pour les frais EcoRide.";
+$_SESSION['success'] = "Trajet créé avec succès. 2 crédits ont été déduits pour le fonctionnement de votre plateforme.";
 header('Location: ajout_trajet.php');
 exit;

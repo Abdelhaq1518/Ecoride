@@ -148,3 +148,10 @@ h4,
 h5 {
   color: #3e3e3e;
 }
+/*Ajout trajet*/
+input.form-control,
+select.form-control {
+  font-size: 0.9rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 1rem;
+}
