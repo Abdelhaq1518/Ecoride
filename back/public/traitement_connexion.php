@@ -1,14 +1,15 @@
 <?php
 session_start();
-require_once __DIR__ . '/../includes/verify_csrf.php';
 require_once __DIR__ . '/../dev/db.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    // Valide le token CSRF ou stoppe le script
-    validateCsrfOrDie($_POST['csrf_token'] ?? null);
+    // Vérification CSRF inline
+    if (!isset($_SESSION['csrf_token']) || ($_POST['csrf_token'] ?? '') !== $_SESSION['csrf_token']) {
+        die("Erreur de sécurité : token CSRF invalide.");
+    }
 
-    // Vérifie que les champs obligatoires sont bien présents et non vides
+    // Vérifie que les champs obligatoires sont présents et non vides
     if (
         isset($_POST['pseudo'], $_POST['email'], $_POST['motdepasse']) &&
         !empty($_POST['pseudo']) &&
@@ -28,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $utilisateur = $stmt->fetch();
 
         if ($utilisateur && password_verify($password, $utilisateur['PASSWORD'])) {
-            // Connexion réussie, stockage des données utilisateur en session
+            // Connexion réussie, stockage en session
             $_SESSION['utilisateur'] = [
                 'id'       => $utilisateur['id'],
                 'pseudo'   => $utilisateur['pseudo'],

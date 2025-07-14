@@ -32,14 +32,14 @@ try {
         exit;
     }
 
-    // ⚠️ Empêcher la participation à son propre trajet
+    //  Empêcher la participation à son propre trajet
     if ((int)$trajet['createur_id'] === (int)$user_id) {
         $pdo->rollBack();
         echo json_encode(['success' => false, 'message' => 'Vous ne pouvez pas participer à votre propre trajet.']);
         exit;
     }
 
-    // ⚠️ Vérifier si l'utilisateur a le rôle passager ou combo
+    //  Vérifier si l'utilisateur a le rôle passager ou combo
     $stmtRole = $pdo->prepare("
         SELECT r.libelle
         FROM utilisateur_roles ur
