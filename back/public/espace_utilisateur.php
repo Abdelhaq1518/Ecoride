@@ -45,7 +45,7 @@ $preferences = $stmtPrefs->fetch(PDO::FETCH_ASSOC);
             <?php endif; ?>
 
             <li class="nav-item"><a href="ajout_trajet.php" class="nav-link">Ajouter un trajet</a></li>
-            <li class="nav-item"><a href="#" class="nav-link ">Historique</a></li>
+            <li class="nav-item"><a href="historique.php" class="nav-link ">Historique</a></li>
         </ul>
     </nav>
 
