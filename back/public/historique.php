@@ -68,7 +68,12 @@ if ($isPassager) {
     $stmtCountP->execute();
     $totalPassager = (int)$stmtCountP->fetchColumn();
 
-    $query = "SELECT c.* FROM covoiturages c JOIN participations p ON p.covoiturage_id = c.covoiturage_id WHERE p.utilisateur_id = :id";
+    $query = "
+        SELECT c.*, p.validation_passager 
+        FROM covoiturages c 
+        JOIN participations p ON p.covoiturage_id = c.covoiturage_id 
+        WHERE p.utilisateur_id = :id
+    ";
     if ($dateFilter) $query .= " AND c.date_depart = :date";
     $query .= " ORDER BY c.date_depart ASC, c.heure_depart ASC LIMIT :limit OFFSET :offset";
 
@@ -97,7 +102,7 @@ function renderPagination($total, $limit, $currentPage, $paramName) {
 <main class="container mt-5"><!-- Main utilisé pour sticky footer -->
     <?php if ($dateFilter): ?>
         <p class="text-muted">
-            📅 Filtré par date :
+             Filtré par date :
             <?php
                 $formatter = new IntlDateFormatter('fr_FR', IntlDateFormatter::FULL, IntlDateFormatter::NONE);
                 echo $formatter->format(new DateTime($dateFilter));
@@ -168,6 +173,15 @@ function renderPagination($total, $limit, $currentPage, $paramName) {
                         <?php if ($trajet['statut'] === 'annulé'): ?>
                             <span class="badge bg-danger ms-2">annulé</span>
                         <?php endif; ?>
+
+                        <?php if ($trajet['validation_passager'] == 0 && $trajet['statut'] === 'arrivee'): ?>
+                            <!-- Bouton pour valider le trajet -->
+                            <form class="mt-2 valider-trajet-form" data-id="<?= $trajet['covoiturage_id'] ?>">
+                                <button type="submit" class="btn btn-sm btn-success">Confirmer que le trajet s'est bien déroulé</button>
+                            </form>
+                        <?php elseif ($trajet['validation_passager'] == 1): ?>
+                            <span class="badge bg-success ms-2">Trajet validé</span>
+                        <?php endif; ?>
                     </li>
                 <?php endforeach; ?>
             </ul>
@@ -222,6 +236,28 @@ document.querySelectorAll('.annuler-btn').forEach(button => {
             console.error(error);
             alert("Erreur lors de l'annulation.");
         });
+    });
+});
+
+document.querySelectorAll('.valider-trajet-form').forEach(form => {
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+        const trajetId = form.getAttribute('data-id');
+        fetch('valider_trajet.php', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: 'covoiturage_id=' + encodeURIComponent(trajetId)
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                alert('Trajet validé avec succès !');
+                window.location.reload();
+            } else {
+                alert(data.message || 'Erreur lors de la validation.');
+            }
+        })
+        .catch(() => alert('Erreur réseau.'));
     });
 });
 </script>

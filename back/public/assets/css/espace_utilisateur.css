@@ -8,11 +8,6 @@ body {
   margin: 0;
 }
 
-body {
-  display: flex;
-  flex-direction: column;
-}
-
 main {
   flex: 1;
 }
@@ -240,7 +235,7 @@ select.form-control {
 }
 /* Modale d’annulation (charte EcoRide) */
 .modal-content {
-  background-color: #f4efd7;
+  background-color: #ada269;
   border-radius: 1rem;
   border: none;
   font-family: system-ui, sans-serif;
@@ -327,4 +322,8 @@ select.form-control {
 /* Badges personnalisés (ex: "annulé") */
 .badge.bg-danger {
   background-color: #cf6973 !important;
+}
+/*Annuler/démarrer un covoiturage*/
+.btn-demarrer {
+  background-color: #a5c89a;
 }
