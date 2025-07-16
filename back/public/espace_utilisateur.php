@@ -31,26 +31,37 @@ $preferences = $stmtPrefs->fetch(PDO::FETCH_ASSOC);
 
 <?php include __DIR__ . '/../includes/header.php'; ?>
 <link rel="stylesheet" href="assets/css/espace_utilisateur.css">
-
+<body>
 <div class="full-height-container">
     <!-- Menu latéral -->
-    <nav class="sidebar_espace p-3" style="min-width: 220px; min-height: 100vh;">
+     <nav class="sidebar_espace p-3" style="min-width: 220px; min-height: 100vh;">
         <h5 class="mb-4">Mon espace</h5>
         <ul class="nav flex-column">
-            <li class="nav-item"><a href="#" class="nav-link">Accueil</a></li>
-            <li class="nav-item"><a href="#mes-vehicules" class="nav-link">Mes véhicules</a></li>
+            <li class="nav-item">
+                <a href="#mes-vehicules" class="nav-link">Mes véhicules</a>
+            </li>
 
             <?php if (in_array('chauffeur', $roles) || in_array('combo', $roles)): ?>
-                <li class="nav-item"><a href="preferences_conducteur.php" class="nav-link">Mes préférences</a></li>
+                <li class="nav-item">
+                    <a href="preferences_conducteur.php" class="nav-link">Mes préférences</a>
+                </li>
+                <li class="nav-item">
+                    <a href="statut_trajet.php" class="nav-link">Démarrer/Arrêter un covoiturage</a>
+                </li>
             <?php endif; ?>
 
-            <li class="nav-item"><a href="ajout_trajet.php" class="nav-link">Ajouter un trajet</a></li>
-            <li class="nav-item"><a href="historique.php" class="nav-link ">Historique</a></li>
+            <li class="nav-item">
+                <a href="ajout_trajet.php" class="nav-link">Ajouter un trajet</a>
+            </li>
+            <li class="nav-item">
+                <a href="historique.php" class="nav-link">Historique</a>
+            </li>
         </ul>
     </nav>
 
+
     <!-- Contenu principal -->
-    <main class="flex-grow-1 p-4 bg-eco-light style=margin-left: 220px;">
+    <main class="p-4 bg-eco-light">
         <?php if (isset($_SESSION['success'])): ?>
             <div class="alert alert-success"><?= $_SESSION['success'] ?></div>
             <?php unset($_SESSION['success']); ?>
@@ -183,5 +194,5 @@ $preferences = $stmtPrefs->fetch(PDO::FETCH_ASSOC);
         <?php endif; ?>
     </main>
 </div>
-
-<?php include __DIR__ . '/../includes/footer.php'; ?>
+<?php require_once __DIR__ . '/../includes/footer.php'; ?>
+</body>
