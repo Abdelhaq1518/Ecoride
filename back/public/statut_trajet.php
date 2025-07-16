@@ -4,6 +4,7 @@ date_default_timezone_set('Europe/Paris');
 require_once __DIR__ . '/../includes/header.php';
 echo '<link rel="stylesheet" href="/EcoRide/back/public/assets/css/espace_utilisateur.css">';
 require_once __DIR__ . '/../dev/db.php';
+require_once __DIR__ . '/../dev/mailer.php';
 
 if (!isset($_SESSION['utilisateur']['id'])) {
     echo "<p>Vous devez être connecté pour accéder à cette page.</p>";
@@ -96,7 +97,29 @@ function libelleStatut($statut) {
                 $dureeSeconds = $heureArrivee->getTimestamp() - $heureDepart->getTimestamp();
                 $now = new DateTime();
                 $elapsedSeconds = $now->getTimestamp() - $heureDepart->getTimestamp();
-                $seuil50 = $dureeSeconds * 0.5;
+                $seuil50 = $dureeSeconds * 0.1;
+
+                // Gestion des validations après arrivée
+                if ($trajet['statut_trajet'] === 'arrivee') {
+                    $stmtPassagers = $pdo->prepare("SELECT u.email, u.id AS utilisateur_id FROM participations p JOIN utilisateurs u ON p.utilisateur_id = u.id WHERE p.covoiturage_id = :trajet_id");
+                    $stmtPassagers->bindValue(':trajet_id', $trajet['covoiturage_id'], PDO::PARAM_INT);
+                    $stmtPassagers->execute();
+                    $passagers = $stmtPassagers->fetchAll(PDO::FETCH_ASSOC);
+
+                    foreach ($passagers as $passager) {
+                        $token = bin2hex(random_bytes(32));
+
+                        $stmtInsert = $pdo->prepare("INSERT INTO validations_trajets (utilisateur_id, covoiturage_id, token, est_valide) VALUES (:utilisateur_id, :covoiturage_id, :token, 0)");
+                        $stmtInsert->bindValue(':utilisateur_id', $passager['utilisateur_id'], PDO::PARAM_INT);
+                        $stmtInsert->bindValue(':covoiturage_id', $trajet['covoiturage_id'], PDO::PARAM_INT);
+                        $stmtInsert->bindValue(':token', $token, PDO::PARAM_STR);
+                        $stmtInsert->execute();
+
+                        $lien = "http://localhost/EcoRide/back/public/valider_trajet.php?token=" . $token;
+                        $message = "Bonjour,\n\nLe trajet auquel vous avez participé est maintenant terminé.\nVeuillez confirmer votre trajet et laisser un avis en cliquant sur ce lien :\n\n$lien\n\nMerci de votre confiance !";
+                        envoyerEmail($passager['email'], "Confirmation de votre trajet EcoRide", $message);
+                    }
+                }
             ?>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     <div>

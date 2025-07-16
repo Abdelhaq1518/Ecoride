@@ -63,7 +63,7 @@ $update->execute([':statut' => $nouveauStatut, ':id' => $trajetId]);
 // Envoi du mail si statut = "arrivee"
 if ($nouveauStatut === 'arrivee') {
     $stmtParticipants = $pdo->prepare("
-        SELECT u.email, u.pseudo
+        SELECT u.email, u.pseudo, u.id AS utilisateur_id
         FROM participations p
         JOIN utilisateurs u ON u.id = p.utilisateur_id
         WHERE p.covoiturage_id = :id
@@ -71,16 +71,31 @@ if ($nouveauStatut === 'arrivee') {
     $stmtParticipants->execute([':id' => $trajetId]);
     $participants = $stmtParticipants->fetchAll(PDO::FETCH_ASSOC);
 
-    $lienValidation = "https://tonsite.com/historique.php"; // Remplace par l’URL réelle
-
     foreach ($participants as $participant) {
         $email = $participant['email'];
         $pseudo = $participant['pseudo'];
+        $utilisateurId = $participant['utilisateur_id'];
+
+        // Génération token unique
+        $token = bin2hex(random_bytes(32));
+
+        // Insertion du token en base
+        $stmtInsert = $pdo->prepare("
+            INSERT INTO validations_trajets (utilisateur_id, covoiturage_id, token, est_valide)
+            VALUES (:utilisateur_id, :covoiturage_id, :token, 0)
+        ");
+        $stmtInsert->bindValue(':utilisateur_id', $utilisateurId, PDO::PARAM_INT);
+        $stmtInsert->bindValue(':covoiturage_id', $trajetId, PDO::PARAM_INT);
+        $stmtInsert->bindValue(':token', $token, PDO::PARAM_STR);
+        $stmtInsert->execute();
+
+        // Création du lien avec token
+        $lienValidation = "http://localhost/ecoride/back/public/valider_trajet.php?token=" . urlencode($token);
 
         $sujet = "EcoRide – Confirmation d'arrivée du trajet";
         $message = "Bonjour $pseudo,\n\n" .
             "Le trajet auquel vous avez participé est arrivé à destination.\n" .
-            "Merci de bien vouloir vous connecter à votre espace personnel pour confirmer que tout s’est bien déroulé :\n" .
+            "Merci de bien vouloir valider votre trajet en cliquant ici :\n" .
             "$lienValidation\n\n" .
             "Cela permettra de finaliser le trajet et de créditer le chauffeur.\n\n" .
             "Merci pour votre confiance,\nL’équipe EcoRide.";

@@ -44,7 +44,7 @@ require_once __DIR__ . '/ini.php';
     <nav class="navbar navbar-expand-lg navbar-light navbar-custom-warning">
       <div class="container-fluid">
         <a class="navbar-brand" href="index.php">
-          <img src="assets/img/logo.svg" alt="EcoRide Logo" class="logo-ecoride" />
+          <img src="assets/img/logo.webp" alt="EcoRide Logo" class="logo-ecoride" />
         </a>
         <button
           class="navbar-toggler"

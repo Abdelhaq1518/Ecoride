@@ -4,7 +4,6 @@ require_once __DIR__ . '/../includes/header.php';
 echo '<link rel="stylesheet" href="/EcoRide/back/public/assets/css/espace_utilisateur.css">';
 require_once __DIR__ . '/../dev/db.php';
 
-// Vérification de connexion
 if (!isset($_SESSION['utilisateur']['id'])) {
     echo "<p>Vous devez être connecté pour voir votre historique.</p>";
     require_once __DIR__ . '/../includes/footer.php';
@@ -14,7 +13,7 @@ if (!isset($_SESSION['utilisateur']['id'])) {
 $userId = $_SESSION['utilisateur']['id'];
 $dateFilter = $_GET['date_filter'] ?? null;
 
-// Rôles
+// Récupération des rôles
 $stmtRoles = $pdo->prepare("
     SELECT r.libelle 
     FROM utilisateur_roles ur
@@ -99,20 +98,16 @@ function renderPagination($total, $limit, $currentPage, $paramName) {
 }
 ?>
 
-<main class="container mt-5"><!-- Main utilisé pour sticky footer -->
+<main class="container mt-5">
     <?php if ($dateFilter): ?>
-        <p class="text-muted">
-             Filtré par date :
-            <?php
-                $formatter = new IntlDateFormatter('fr_FR', IntlDateFormatter::FULL, IntlDateFormatter::NONE);
-                echo $formatter->format(new DateTime($dateFilter));
-            ?>
+        <p class="text-muted">Filtré par date : <?= (new IntlDateFormatter('fr_FR', IntlDateFormatter::FULL, IntlDateFormatter::NONE))->format(new DateTime($dateFilter)) ?>
             <a href="historique.php" class="btn btn-sm btn-outline-secondary ms-2">Réinitialiser</a>
         </p>
     <?php endif; ?>
 
     <?php if ($isChauffeur): ?>
         <h2>Mes trajets en tant que chauffeur</h2>
+        <!-- formulaire de filtre -->
         <form method="get" class="mb-3">
             <input type="date" name="date_filter" class="form-control"
                    min="<?= date('Y-m-d') ?>"
@@ -130,10 +125,8 @@ function renderPagination($total, $limit, $currentPage, $paramName) {
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         <div>
                             <strong><?= htmlspecialchars($trajet['adresse_depart']) ?> → <?= htmlspecialchars($trajet['adresse_arrivee']) ?></strong><br>
-                            <?php
-                            $formatter = new IntlDateFormatter('fr_FR', IntlDateFormatter::FULL, IntlDateFormatter::NONE);
-                            echo $formatter->format(new DateTime($trajet['date_depart'])) . ' à ' . htmlspecialchars($trajet['heure_depart']);
-                            ?>
+                            <?= (new IntlDateFormatter('fr_FR', IntlDateFormatter::FULL, IntlDateFormatter::NONE))->format(new DateTime($trajet['date_depart'])) ?>
+                            à <?= htmlspecialchars($trajet['heure_depart']) ?>
                             <?php if ($trajet['statut'] === 'annulé'): ?>
                                 <span class="badge bg-danger ms-2">annulé</span>
                             <?php endif; ?>
@@ -166,21 +159,27 @@ function renderPagination($total, $limit, $currentPage, $paramName) {
                 <?php foreach ($trajetsPassager as $trajet): ?>
                     <li class="list-group-item">
                         <strong><?= htmlspecialchars($trajet['adresse_depart']) ?> → <?= htmlspecialchars($trajet['adresse_arrivee']) ?></strong><br>
-                        <?php
-                        $formatter = new IntlDateFormatter('fr_FR', IntlDateFormatter::FULL, IntlDateFormatter::NONE);
-                        echo $formatter->format(new DateTime($trajet['date_depart'])) . ' à ' . htmlspecialchars($trajet['heure_depart']);
-                        ?>
+                        <?= (new IntlDateFormatter('fr_FR', IntlDateFormatter::FULL, IntlDateFormatter::NONE))->format(new DateTime($trajet['date_depart'])) ?>
+                        à <?= htmlspecialchars($trajet['heure_depart']) ?>
+
                         <?php if ($trajet['statut'] === 'annulé'): ?>
                             <span class="badge bg-danger ms-2">annulé</span>
                         <?php endif; ?>
 
-                        <?php if ($trajet['validation_passager'] == 0 && $trajet['statut'] === 'arrivee'): ?>
-                            <!-- Bouton pour valider le trajet -->
-                            <form class="mt-2 valider-trajet-form" data-id="<?= $trajet['covoiturage_id'] ?>">
-                                <button type="submit" class="btn btn-sm btn-success">Confirmer que le trajet s'est bien déroulé</button>
-                            </form>
-                        <?php elseif ($trajet['validation_passager'] == 1): ?>
-                            <span class="badge bg-success ms-2">Trajet validé</span>
+                        <?php if ($trajet['statut'] === 'arrivee'): ?>
+                            <?php
+                            $stmt = $pdo->prepare("SELECT token, est_valide FROM validations_trajets WHERE utilisateur_id = :uid AND covoiturage_id = :cid");
+                            $stmt->bindValue(':uid', $userId, PDO::PARAM_INT);
+                            $stmt->bindValue(':cid', $trajet['covoiturage_id'], PDO::PARAM_INT);
+                            $stmt->execute();
+                            $validation = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                            if ($validation && !$validation['est_valide']) {
+                                echo '<a href="valider_trajet.php?token=' . urlencode($validation['token']) . '" class="btn btn-sm btn-success mt-2">Valider le trajet</a>';
+                            } elseif ($validation && $validation['est_valide']) {
+                                echo '<span class="badge bg-success ms-2">Trajet validé</span>';
+                            }
+                            ?>
                         <?php endif; ?>
                     </li>
                 <?php endforeach; ?>
@@ -194,6 +193,7 @@ function renderPagination($total, $limit, $currentPage, $paramName) {
     <?php endif; ?>
 </main>
 
+<!-- Modal annulation -->
 <div class="modal fade" id="modalAnnulationInfo" tabindex="-1" aria-labelledby="modalAnnulationInfoLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content" style="border-radius: 1rem;">
@@ -236,28 +236,6 @@ document.querySelectorAll('.annuler-btn').forEach(button => {
             console.error(error);
             alert("Erreur lors de l'annulation.");
         });
-    });
-});
-
-document.querySelectorAll('.valider-trajet-form').forEach(form => {
-    form.addEventListener('submit', e => {
-        e.preventDefault();
-        const trajetId = form.getAttribute('data-id');
-        fetch('valider_trajet.php', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-            body: 'covoiturage_id=' + encodeURIComponent(trajetId)
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                alert('Trajet validé avec succès !');
-                window.location.reload();
-            } else {
-                alert(data.message || 'Erreur lors de la validation.');
-            }
-        })
-        .catch(() => alert('Erreur réseau.'));
     });
 });
 </script>
