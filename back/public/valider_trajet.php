@@ -2,7 +2,7 @@
 session_start();
 require_once __DIR__ . '/../dev/db.php';
 require_once __DIR__ . '/../includes/verify_csrf.php';
-require_once __DIR__ . '/../dev/vendor/autoload.php'; 
+require_once __DIR__ . '/../dev/vendor/autoload.php';
 
 use MongoDB\Client;
 use MongoDB\BSON\UTCDateTime;
@@ -34,6 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $validation) {
     $commentaire = trim($_POST['commentaire'] ?? '');
     $note = isset($_POST['note']) ? (int)$_POST['note'] : null;
 
+    // Mise à jour validation
     $stmt = $pdo->prepare("
         UPDATE validations_trajets 
         SET est_valide = :valide, commentaire = :commentaire, date_validation = NOW() 
@@ -44,15 +45,59 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $validation) {
     $stmt->bindValue(':id', $validation['id'], PDO::PARAM_INT);
     $stmt->execute();
 
+    // Insertion dans MongoDB
     $collection->insertOne([
         'utilisateur_id' => (int)$validation['utilisateur_id'],
         'covoiturage_id' => (int)$validation['covoiturage_id'],
         'note' => $note,
         'commentaire' => $commentaire,
-        'est_valide' => (bool)$est_valide,
+        'est_valide' => false,
         'date' => new UTCDateTime(),
         'statut' => 'en attente'
     ]);
+
+    //  Si avis négatif, marquer la participation en litige
+    if ($est_valide === 0) {
+        $stmt = $pdo->prepare("
+            UPDATE participations 
+            SET etat_credit = 'litige' 
+            WHERE utilisateur_id = :utilisateur_id 
+            AND covoiturage_id = :covoiturage_id
+        ");
+        $stmt->bindValue(':utilisateur_id', $validation['utilisateur_id'], PDO::PARAM_INT);
+        $stmt->bindValue(':covoiturage_id', $validation['covoiturage_id'], PDO::PARAM_INT);
+        $stmt->execute();
+    } else {
+        //  Sinon, créditer le chauffeur
+        $stmt = $pdo->prepare("
+            SELECT c.chauffeur_id
+            FROM covoiturages c
+            WHERE c.id = :id
+        ");
+        $stmt->bindValue(':id', $validation['covoiturage_id'], PDO::PARAM_INT);
+        $stmt->execute();
+        $chauffeur = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($chauffeur) {
+            $stmt = $pdo->prepare("
+                UPDATE utilisateurs 
+                SET credits = credits + 10 
+                WHERE id = :id
+            ");
+            $stmt->bindValue(':id', $chauffeur['chauffeur_id'], PDO::PARAM_INT);
+            $stmt->execute();
+
+            $stmt = $pdo->prepare("
+                UPDATE participations 
+                SET etat_credit = 'credite' 
+                WHERE utilisateur_id = :utilisateur_id 
+                AND covoiturage_id = :covoiturage_id
+            ");
+            $stmt->bindValue(':utilisateur_id', $validation['utilisateur_id'], PDO::PARAM_INT);
+            $stmt->bindValue(':covoiturage_id', $validation['covoiturage_id'], PDO::PARAM_INT);
+            $stmt->execute();
+        }
+    }
 
     $_SESSION['success'] = "Merci ! Votre retour a bien été enregistré.";
     header('Location: connexion.php');

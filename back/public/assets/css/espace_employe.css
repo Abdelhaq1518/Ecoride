@@ -1,0 +1,78 @@
+body,
+html {
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  font-family: system-ui, sans-serif;
+  background-color: #fcfbf7;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Pour que le footer reste en bas */
+.gestion-avis-wrapper {
+  flex: 1 0 auto;
+}
+
+/* TABLE BEIGE */
+.tableau-avis {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #f4efd7;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  font-size: 0.95rem;
+}
+
+.tableau-avis th,
+.tableau-avis td {
+  padding: 12px;
+  border: 1px solid #ddd6bd;
+  background-color: #f4efd7;
+  color: #444;
+}
+
+.tableau-avis th {
+  background-color: #ece3c3;
+}
+
+/* Badges sobres */
+.badge.bg-success {
+  background-color: #3f8e4d !important;
+  color: #e9ecef;
+  border-radius: 0.5rem;
+  padding: 4px 8px;
+  font-size: 0.8rem;
+}
+
+.badge.bg-warning {
+  background-color: #f0e5c1;
+  color: #5f4e1c;
+  border-radius: 0.5rem;
+  padding: 4px 8px;
+  font-size: 0.8rem;
+}
+
+/* Boutons */
+.btn-success {
+  background-color: #d3c6aa;
+  color: #2e2e2e;
+  border: none;
+  border-radius: 0.5rem;
+}
+
+.btn-success:hover {
+  background-color: #c1b89f;
+}
+
+.btn-danger {
+  background-color: #cf6973;
+  color: rgb(238, 228, 228);
+  border: none;
+  border-radius: 0.5rem;
+}
+
+.btn-danger:hover {
+  background-color: #bb5d66;
+}

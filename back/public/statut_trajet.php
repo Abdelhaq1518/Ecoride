@@ -137,7 +137,7 @@ function libelleStatut($statut) {
 
                     <?php elseif ($trajet['statut_trajet'] === 'en_cours'): ?>
                         <?php if ($elapsedSeconds >= $seuil50): ?>
-                            <button class="btn btn-sm btn-warning changer-statut" data-id="<?= $trajet['covoiturage_id'] ?>" data-next="arrivee">En cours (cliquez ici pour terminer)</button>
+                            <button class="btn btn-sm btn-success border-subtle changer-statut" data-id="<?= $trajet['covoiturage_id'] ?>" data-next="arrivee">En cours (cliquez ici pour terminer)</button>
                         <?php else: ?>
                             <button class="btn btn-sm btn-warning" disabled title="Vous pouvez terminer le trajet après au moins 50% de la durée estimée">En cours (fin possible après 50%)</button>
                         <?php endif; ?>

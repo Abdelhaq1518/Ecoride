@@ -3,6 +3,11 @@ session_start();
 $pageStyles = ['assets/css/details_covoiturages.css'];
 require_once __DIR__ . '/../includes/header.php';
 require_once __DIR__ . '/../dev/db.php';
+require_once __DIR__ . '/../dev/vendor/autoload.php';
+
+
+
+use MongoDB\Client;
 
 $covoiturage_id = $_GET['id'] ?? null;
 ?>
@@ -47,6 +52,32 @@ if ($covoiturage_id && is_numeric($covoiturage_id)) {
             $stmtCheck->execute();
             $a_deja_participe = $stmtCheck->fetchColumn() > 0;
         }
+
+        // Connexion à MongoDB
+        $mongo = new Client("mongodb://localhost:27017");
+        $collection = $mongo->ecoride->avis_covoiturage;
+
+        // Récupérer les avis validés pour ce covoiturage
+        $avis_valides = $collection->find([
+            'covoiturage_id' => (int)$covoiturage_id,
+            'est_valide' => true
+        ])->toArray();
+
+        // Récupérer les infos des utilisateurs ayant laissé un avis
+        $idsUtilisateurs = array_unique(array_column($avis_valides, 'utilisateur_id'));
+
+        $mapUtilisateurs = [];
+if (count($idsUtilisateurs) > 0) {
+    $idsUtilisateurs = array_values($idsUtilisateurs); // ✅ Corrige l'erreur
+    $in = str_repeat('?,', count($idsUtilisateurs) - 1) . '?';
+    $stmtUsers = $pdo->prepare("SELECT id, pseudo, photo FROM utilisateurs WHERE id IN ($in)");
+    $stmtUsers->execute($idsUtilisateurs);
+    $utilisateurs = $stmtUsers->fetchAll(PDO::FETCH_ASSOC);
+
+    foreach ($utilisateurs as $u) {
+        $mapUtilisateurs[$u['id']] = $u;
+    }
+}
 ?>
     <div class="trajet-result mx-auto">
         <div class="trajet-infos">
@@ -126,6 +157,35 @@ if ($covoiturage_id && is_numeric($covoiturage_id)) {
             <?php endif; ?>
         </div>
 
+   <?php if (!empty($avis_valides)): ?>
+    <div class="avis-section mt-5">
+        <h5 class="fw-semibold">Avis des passagers</h5>
+        <?php
+            $avisAffiches = [];
+            foreach ($avis_valides as $avis):
+                $cle = $avis['utilisateur_id'] . '-' . $avis['covoiturage_id'];
+                if (isset($avisAffiches[$cle])) {
+                    continue; // On a déjà affiché un avis pour ce duo utilisateur-trajet
+                }
+                $avisAffiches[$cle] = true;
+
+                $user = $mapUtilisateurs[$avis['utilisateur_id']] ?? null;
+                $photo = $user['photo'] ?? 'default-user.webp';
+                $pseudo = $user['pseudo'] ?? 'Utilisateur';
+        ?>
+            <div class="avis-passager">
+                <div class="d-flex align-items-center mb-2">
+                    <img src="assets/img/<?= htmlspecialchars($photo) ?>" class="avatar-avis me-3" alt="Photo de <?= htmlspecialchars($pseudo) ?>">
+                    <strong><?= htmlspecialchars($pseudo) ?></strong>
+                    <span class="ms-auto"><?= $avis['note'] ?>/5 ★</span>
+                </div>
+                <p class="mb-0"><?= nl2br(htmlspecialchars($avis['commentaire'] ?? '')) ?></p>
+            </div>
+        <?php endforeach; ?>
+    </div>
+<?php endif; ?>
+
+
         <!-- Modal -->
         <div class="modal fade" id="participationModal" tabindex="-1" aria-labelledby="participationModalLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -165,7 +225,6 @@ if ($covoiturage_id && is_numeric($covoiturage_id)) {
                     return;
                 }
 
-                // Message de confirmation
                 modalBody.textContent = `Êtes-vous sûr de vouloir utiliser ${coutCredits} crédits pour ce trajet ?`;
                 confirmBtn.style.display = "inline-block";
 

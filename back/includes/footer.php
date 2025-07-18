@@ -12,7 +12,7 @@
       <span class="text-muted small ms-md-3"> <a href="mailto:covoitest7@gmail.com" class="text-muted text-decoration-none">covoitest7@gmail.com</a></span>
     </div>
     <div class="d-flex gap-3">
-      <a href="mentions_legales.php" class="footer-link">Mentions légales</a>" class="footer-link">Mentions légales</a>
+      <a href="mentions_legales.php" class="footer-link">Mentions légales</a>
       <a href="#" class="footer-link">Politique de confidentialité</a>
     </div>
   </div>
