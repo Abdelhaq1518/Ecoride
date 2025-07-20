@@ -8,7 +8,8 @@ use MongoDB\Client;
 use MongoDB\BSON\UTCDateTime;
 
 $mongo = new Client("mongodb://localhost:27017");
-$collection = $mongo->ecoride->avis_covoiturage;
+$collectionAvis = $mongo->ecoride->avis_covoiturage;
+$collectionLitiges = $mongo->ecoride->litiges;
 
 $token = $_GET['token'] ?? '';
 $erreur = '';
@@ -45,53 +46,62 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $validation) {
     $stmt->bindValue(':id', $validation['id'], PDO::PARAM_INT);
     $stmt->execute();
 
-    // Insertion dans MongoDB
-    $collection->insertOne([
-        'utilisateur_id' => (int)$validation['utilisateur_id'],
-        'covoiturage_id' => (int)$validation['covoiturage_id'],
-        'note' => $note,
-        'commentaire' => $commentaire,
-        'est_valide' => false,
-        'date' => new UTCDateTime(),
-        'statut' => 'en attente'
-    ]);
-
-    //  Si avis négatif, marquer la participation en litige
     if ($est_valide === 0) {
+        // Insertion dans litiges_covoiturage (MongoDB)
+        $collectionLitiges->insertOne([
+            'utilisateur_id' => (int)$validation['utilisateur_id'],
+            'covoiturage_id' => (int)$validation['covoiturage_id'],
+            'note' => $note,
+            'commentaire' => $commentaire,
+            'date' => new UTCDateTime(),
+            'statut' => 'en_attente'
+        ]);
+
+        // Mise à jour statut trajet en litige (MySQL)
+        $stmtLitige = $pdo->prepare("
+            UPDATE covoiturages 
+            SET statut_trajet = 'litige' 
+            WHERE covoiturage_id = :id
+        ");
+        $stmtLitige->bindValue(':id', $validation['covoiturage_id'], PDO::PARAM_INT);
+        $stmtLitige->execute();
+
+        // Marquer la participation en litige
         $stmt = $pdo->prepare("
             UPDATE participations 
             SET etat_credit = 'litige' 
-            WHERE utilisateur_id = :utilisateur_id 
-            AND covoiturage_id = :covoiturage_id
+            WHERE utilisateur_id = :utilisateur_id AND covoiturage_id = :covoiturage_id
         ");
         $stmt->bindValue(':utilisateur_id', $validation['utilisateur_id'], PDO::PARAM_INT);
         $stmt->bindValue(':covoiturage_id', $validation['covoiturage_id'], PDO::PARAM_INT);
         $stmt->execute();
+
     } else {
-        //  Sinon, créditer le chauffeur
-        $stmt = $pdo->prepare("
-            SELECT c.chauffeur_id
-            FROM covoiturages c
-            WHERE c.id = :id
-        ");
+        // Insertion dans avis_covoiturage (MongoDB)
+        $collectionAvis->insertOne([
+            'utilisateur_id' => (int)$validation['utilisateur_id'],
+            'covoiturage_id' => (int)$validation['covoiturage_id'],
+            'note' => $note,
+            'commentaire' => $commentaire,
+            'date' => new UTCDateTime(),
+            'est_valide' => true
+        ]);
+
+        // Crédite le chauffeur
+        $stmt = $pdo->prepare("SELECT chauffeur_id FROM covoiturages WHERE covoiturage_id = :id");
         $stmt->bindValue(':id', $validation['covoiturage_id'], PDO::PARAM_INT);
         $stmt->execute();
         $chauffeur = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($chauffeur) {
-            $stmt = $pdo->prepare("
-                UPDATE utilisateurs 
-                SET credits = credits + 10 
-                WHERE id = :id
-            ");
+            $stmt = $pdo->prepare("UPDATE utilisateurs SET credits = credits + 10 WHERE id = :id");
             $stmt->bindValue(':id', $chauffeur['chauffeur_id'], PDO::PARAM_INT);
             $stmt->execute();
 
             $stmt = $pdo->prepare("
                 UPDATE participations 
                 SET etat_credit = 'credite' 
-                WHERE utilisateur_id = :utilisateur_id 
-                AND covoiturage_id = :covoiturage_id
+                WHERE utilisateur_id = :utilisateur_id AND covoiturage_id = :covoiturage_id
             ");
             $stmt->bindValue(':utilisateur_id', $validation['utilisateur_id'], PDO::PARAM_INT);
             $stmt->bindValue(':covoiturage_id', $validation['covoiturage_id'], PDO::PARAM_INT);
@@ -115,7 +125,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $validation) {
         <h2 class="mb-4">Confirmation de trajet</h2>
         <form method="POST">
             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
-            
+
             <div class="mb-3">
                 <label class="form-label fw-bold">Comment s’est passé le trajet ?</label><br>
                 <div class="form-check">

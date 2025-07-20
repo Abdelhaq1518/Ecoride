@@ -217,3 +217,56 @@
 .avis-section h5 {
   margin-bottom: 1rem;
 }
+
+/*Détails litiges*/
+.trajet-result {
+  background-color: #f4efd7;
+  border: 1px solid #ccc;
+  border-radius: 1rem;
+  max-width: 750px;
+  padding: 2rem 2rem 2rem 1rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* Bouton rouge clair */
+.btn-contacter {
+  background-color: #f8d7da !important;
+  color: #721c24 !important;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 1rem;
+  text-decoration: none;
+  display: inline-block;
+  transition: background-color 0.3s;
+}
+.btn-contacter:hover {
+  background-color: #f1b0b7 !important;
+}
+
+/* Bouton marron clair */
+.btn-crediter {
+  background-color: #d6c2a8 !important;
+  color: #4e342e !important;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 1rem;
+  transition: background-color 0.3s;
+}
+.btn-crediter:hover {
+  background-color: #c2ae94 !important;
+}
+
+/* Bouton retour neutre (même style que dans details_covoiturages) */
+.btn-retour {
+  background-color: #e0e0e0 !important;
+  color: #333;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 1rem;
+  text-decoration: none;
+  transition: background-color 0.3s;
+}
+.btn-retour:hover {
+  background-color: #cacaca;
+}

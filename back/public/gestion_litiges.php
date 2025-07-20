@@ -1,73 +1,102 @@
 <?php
 session_start();
-require_once __DIR__ . '/../includes/header.php';
+
 require_once __DIR__ . '/../dev/vendor/autoload.php';
+$pageStyles = ['/EcoRide/back/public/assets/css/espace_employe.css'];
+require_once __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/../dev/mongo_doublons.php';
 
 use MongoDB\Client;
 
-if (!isset($_SESSION['utilisateur']['id'])) {
-    header('Location: connexion.php');
-    exit;
-}
-
-// Vérifier que l'utilisateur est un employé (role_id = 4)
-require_once __DIR__ . '/../dev/db.php';
-$userId = $_SESSION['utilisateur']['id'];
-$stmt = $pdo->prepare("SELECT 1 FROM utilisateur_roles WHERE utilisateur_id = :id AND role_id = 4");
-$stmt->execute([':id' => $userId]);
-
-if (!$stmt->fetchColumn()) {
-    echo "Accès refusé.";
-    exit;
-}
-
-// Vérifier qu’un id de covoiturage est présent
-$covoiturage_id = $_GET['id'] ?? null;
-if (!$covoiturage_id) {
-    die('ID covoiturage manquant.');
-}
-
-// Connexion MongoDB
 $mongo = new Client("mongodb://localhost:27017");
 $collection = $mongo->ecoride->litiges;
 
-// Récupération du litige lié au covoiturage
-$litige = $collection->findOne(['covoiturage_id' => (int)$covoiturage_id]);
 
-if (!$litige) {
-    echo "<div class='container mt-5'><h3>Aucun litige trouvé pour le covoiturage #$covoiturage_id</h3></div>";
-    require_once __DIR__ . '/../includes/footer.php';
-    exit;
+
+$dateFiltrage = $_GET['date'] ?? null;
+$filter = ['statut' => ['$ne' => 'resolu']];
+
+if ($dateFiltrage) {
+    $jour = new DateTime($dateFiltrage);
+    $debut = clone $jour;
+    $fin = clone $jour;
+    $debut->setTime(0, 0, 0);
+    $fin->setTime(23, 59, 59);
+    $filter['date_signalement'] = [
+        '$gte' => new MongoDB\BSON\UTCDateTime($debut->getTimestamp() * 1000),
+        '$lte' => new MongoDB\BSON\UTCDateTime($fin->getTimestamp() * 1000)
+    ];
 }
 
-// Récupération des infos du covoiturage concerné (depuis MySQL)
-$stmtTrajet = $pdo->prepare("SELECT * FROM covoiturages WHERE covoiturage_id = :id");
-$stmtTrajet->execute([':id' => $covoiturage_id]);
-$trajet = $stmtTrajet->fetch(PDO::FETCH_ASSOC);
-
-if (!$trajet) {
-    echo "<div class='container mt-5'><h3>Trajet introuvable.</h3></div>";
-    require_once __DIR__ . '/../includes/footer.php';
-    exit;
-}
+$options = ['sort' => ['date_signalement' => -1], 'limit' => 5];
+$litiges = $collection->find($filter, $options)->toArray();
 ?>
 
-<div class="container mt-5">
-    <h2>Litige pour le covoiturage #<?= htmlspecialchars($covoiturage_id) ?></h2>
+<link rel="stylesheet" href="/EcoRide/back/public/assets/css/espace_employe.css">
 
-    <p><strong>Description :</strong> <?= htmlspecialchars($trajet['description'] ?? 'N/A') ?></p>
-    <p><strong>Départ :</strong> <?= htmlspecialchars($trajet['adresse_depart']) ?></p>
-    <p><strong>Arrivée :</strong> <?= htmlspecialchars($trajet['adresse_arrivee']) ?></p>
-    <p><strong>Date :</strong> <?= (new DateTime($trajet['date_depart']))->format('d/m/Y') ?> à <?= htmlspecialchars($trajet['heure_depart']) ?></p>
+<div class="container mt-5 gestion-litiges-wrapper">
+    <h1 class="mb-4">Gestion des litiges</h1>
 
-    <hr>
-    <h4>Détails du litige :</h4>
-    <p><strong>Note :</strong> <?= htmlspecialchars($litige['note'] ?? 'N/A') ?></p>
-    <p><strong>Commentaire :</strong> <?= nl2br(htmlspecialchars($litige['commentaire'] ?? '')) ?></p>
-    <p><strong>Date :</strong> <?= $litige['date'] ? $litige['date']->toDateTime()->format('d/m/Y H:i') : 'N/A' ?></p>
-    <p><strong>Statut :</strong> <span class="badge bg-<?= ($litige['statut'] === 'en_attente' ? 'warning text-dark' : 'success') ?>"><?= htmlspecialchars($litige['statut']) ?></span></p>
+    <?php if (isset($_SESSION['success'])): ?>
+        <div class="alert alert-success"><?= $_SESSION['success']; unset($_SESSION['success']); ?></div>
+    <?php endif; ?>
 
-    <a href="liste_litiges.php" class="btn btn-secondary mt-3">Retour</a>
+    <?php if (isset($_SESSION['error'])): ?>
+        <div class="alert alert-danger"><?= $_SESSION['error']; unset($_SESSION['error']); ?></div>
+    <?php endif; ?>
+
+    <!-- Calendrier de filtrage -->
+    <form method="get" class="mb-4">
+        <label for="date">Filtrer par date :</label>
+        <input type="date" name="date" id="date" value="<?= htmlspecialchars($dateFiltrage ?? '') ?>">
+        <button type="submit" class="btn btn-outline-dark btn-sm">Filtrer</button>
+        <a href="gestion_litiges.php" class="btn btn-outline-secondary btn-sm">Réinitialiser</a>
+    </form>
+
+    <?php if (!is_array($litiges) || count($litiges) === 0): ?>
+        <p class="text-muted">Aucun litige trouvé pour cette période.</p>
+    <?php else: ?>
+        <div class="table-responsive">
+            <table class="table tableau-avis table-bordered">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID Covoiturage</th>
+                        <th>Motif</th>
+                        <th>Description</th>
+                        <th>Date signalement</th>
+                        <th>Statut</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($litiges as $litige): ?>
+                        <tr>
+                            <td><?= htmlspecialchars($litige['covoiturage_id'] ?? 'Inconnu') ?></td>
+                            <td><?= htmlspecialchars($litige['motif'] ?? 'Non précisé') ?></td>
+                            <td><?= nl2br(htmlspecialchars($litige['description'] ?? '')) ?></td>
+                            <td>
+                                <?php
+                                if (isset($litige['date_signalement']) && $litige['date_signalement'] instanceof MongoDB\BSON\UTCDateTime) {
+                                    echo $litige['date_signalement']->toDateTime()->format('d/m/Y H:i');
+                                } else {
+                                    echo 'Date inconnue';
+                                }
+                                ?>
+                            </td>
+                            <td>
+                                <span class="badge bg-warning text-dark">
+                                    <?= htmlspecialchars($litige['statut'] ?? 'En attente') ?>
+                                </span>
+                            </td>
+                            <td>
+                                <a href="details_litige.php?id=<?= $litige['covoiturage_id'] ?>" class="btn btn-dark btn-sm">Gérer</a>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    <?php endif; ?>
 </div>
 
 <?php require_once __DIR__ . '/../includes/footer.php'; ?>

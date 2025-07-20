@@ -1,5 +1,7 @@
 <?php
 session_start();
+$pageStyles = ['assets/css/espace_utilisateur.css'];
+require_once __DIR__ . '/../includes/header.php';
 require_once __DIR__ . '/../dev/db.php';
 require_once __DIR__ . '/../includes/verify_csrf.php';
 
@@ -38,9 +40,9 @@ $stmtPrefs->bindValue(':id', $_SESSION['utilisateur']['id'], PDO::PARAM_INT);
 $stmtPrefs->execute();
 $preferences = $stmtPrefs->fetch(PDO::FETCH_ASSOC);
 
-require_once __DIR__ . '/../includes/header.php';
+
 ?>
-<link rel="stylesheet" href="assets/css/espace_utilisateur.css">
+
 <body>
 <div class="full-height-container">
     <!-- Menu latéral -->

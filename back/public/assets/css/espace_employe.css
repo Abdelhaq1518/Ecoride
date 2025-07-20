@@ -14,27 +14,36 @@ html {
   flex: 1 0 auto;
 }
 
-/* TABLE BEIGE */
-.tableau-avis {
+/* Espace employé - Style unifié pour les tableaux */
+.tableau-beige {
   width: 100%;
+  background-color: #f8f1e4; /* beige marque de fabrique */
   border-collapse: collapse;
-  background-color: #f4efd7;
-  border-radius: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 1rem;
   overflow: hidden;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
   font-size: 0.95rem;
 }
 
-.tableau-avis th,
-.tableau-avis td {
-  padding: 12px;
-  border: 1px solid #ddd6bd;
-  background-color: #f4efd7;
-  color: #444;
+.tableau-beige thead {
+  background-color: #e7d6ba;
+  color: #333;
+  font-weight: bold;
 }
 
-.tableau-avis th {
-  background-color: #ece3c3;
+.tableau-beige th,
+.tableau-beige td {
+  padding: 0.75rem 1rem;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+.tableau-beige tbody tr:nth-child(even) {
+  background-color: #f3ebdd;
+}
+
+.tableau-beige tbody tr:hover {
+  background-color: #efe2cc;
 }
 
 /* Badges sobres */
@@ -75,4 +84,13 @@ html {
 
 .btn-danger:hover {
   background-color: #bb5d66;
+}
+.card-litige {
+  background-color: #f4efd7;
+  border: 1px solid #ccc;
+  border-radius: 1rem;
+  max-width: 750px;
+  padding: 2rem 2rem 2rem 1rem; /* moins de padding à gauche */
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }

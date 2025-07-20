@@ -40,9 +40,16 @@ $avisNonValides = $collection->find(['est_valide' => false])->toArray();
 
 // Récupérer les covoiturages signalés en litige (MySQL)
 $stmtLitiges = $pdo->prepare("
-    SELECT c.covoiturage_id, c.adresse_depart, c.adresse_arrivee, c.date_depart, c.heure_depart, c.heure_arrivee
+    SELECT 
+        c.covoiturage_id, 
+        c.adresse_depart, 
+        c.adresse_arrivee, 
+        c.date_depart, 
+        c.heure_depart, 
+        c.heure_arrivee
     FROM covoiturages c
-    WHERE c.statut_trajet = 'litige'
+    INNER JOIN statuts_trajet st ON c.statut_trajet = st.code
+    WHERE st.code = 'litige'
     ORDER BY c.date_depart DESC
 ");
 $stmtLitiges->execute();
@@ -78,7 +85,7 @@ require_once __DIR__ . '/../includes/header.php';
             <?php if (empty($avisNonValides)): ?>
                 <p>Aucun avis en attente.</p>
             <?php else: ?>
-                <table class="table table-bordered">
+                <table class="tableau-beige">
                     <thead>
                         <tr>
                             <th>Note</th>
@@ -119,11 +126,11 @@ require_once __DIR__ . '/../includes/header.php';
         <hr>
 
         <section>
-            <h2>Covoiturages problématiques</h2>
+            <h2>Covoiturages litigieux</h2>
             <?php if (empty($trajetsLitiges)): ?>
-                <p>Aucun covoiturage problématique.</p>
+                <p>Aucun covoiturage litigieux.</p>
             <?php else: ?>
-                <table class="table table-bordered">
+                <table class="tableau-beige">
                     <thead>
                         <tr>
                             <th>ID Trajet</th>

@@ -127,11 +127,11 @@ function renderPagination($total, $limit, $currentPage, $paramName) {
                             <strong><?= htmlspecialchars($trajet['adresse_depart']) ?> → <?= htmlspecialchars($trajet['adresse_arrivee']) ?></strong><br>
                             <?= (new IntlDateFormatter('fr_FR', IntlDateFormatter::FULL, IntlDateFormatter::NONE))->format(new DateTime($trajet['date_depart'])) ?>
                             à <?= htmlspecialchars($trajet['heure_depart']) ?>
-                            <?php if ($trajet['statut'] === 'annulé'): ?>
+                            <?php if (($trajet['statut_trajet'] ?? '') === 'annulé'): ?>
                                 <span class="badge bg-danger ms-2">annulé</span>
                             <?php endif; ?>
                         </div>
-                        <?php if ($trajet['statut'] !== 'annulé'): ?>
+                        <?php if (($trajet['statut_trajet'] ?? '') !== 'annulé'): ?>
                             <button class="btn btn-sm btn-danger annuler-btn" data-id="<?= $trajet['covoiturage_id'] ?>">Annuler</button>
                         <?php endif; ?>
                     </li>
@@ -162,11 +162,11 @@ function renderPagination($total, $limit, $currentPage, $paramName) {
                         <?= (new IntlDateFormatter('fr_FR', IntlDateFormatter::FULL, IntlDateFormatter::NONE))->format(new DateTime($trajet['date_depart'])) ?>
                         à <?= htmlspecialchars($trajet['heure_depart']) ?>
 
-                        <?php if ($trajet['statut'] === 'annulé'): ?>
+                        <?php if (($trajet['statut_trajet'] ?? '') === 'annulé'): ?>
                             <span class="badge bg-danger ms-2">annulé</span>
                         <?php endif; ?>
 
-                        <?php if ($trajet['statut'] === 'arrivee'): ?>
+                        <?php if (($trajet['statut_trajet'] ?? '') === 'arrivee'): ?>
                             <?php
                             $stmt = $pdo->prepare("SELECT token, est_valide FROM validations_trajets WHERE utilisateur_id = :uid AND covoiturage_id = :cid");
                             $stmt->bindValue(':uid', $userId, PDO::PARAM_INT);
