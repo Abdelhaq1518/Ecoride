@@ -13,7 +13,6 @@ if (!isset($_SESSION['utilisateur']['id'])) {
 }
 
 $userId = $_SESSION['utilisateur']['id'];
-$statuts_valides = ['en_attente', 'en_cours', 'arrivee', 'valide', 'litige'];
 
 function renderPagination($total, $limit, $currentPage) {
     $pages = ceil($total / $limit);
@@ -27,6 +26,26 @@ function renderPagination($total, $limit, $currentPage) {
     echo '</ul></nav>';
 }
 
+function libelleStatut($code) {
+    $labels = [
+        'en_attente' => 'En attente',
+        'en_cours'   => 'En cours',
+        'arrivee'    => 'Arrivé',
+        'annulé'     => 'Annulé',
+    ];
+    return $labels[$code] ?? ucfirst(str_replace('_', ' ', $code));
+}
+
+function classeBadgeStatut($code) {
+    return match ($code) {
+        'en_attente' => 'bg-warning text-dark',
+        'en_cours'   => 'bg-primary',
+        'arrivee'    => 'bg-success',
+        'annulé'     => 'bg-danger',
+        default      => 'bg-secondary',
+    };
+}
+
 $dateFilter = $_GET['date_filter'] ?? null;
 $page = isset($_GET['page']) ? max((int)$_GET['page'], 1) : 1;
 $limit = 5;
@@ -35,13 +54,21 @@ $today = date('Y-m-d');
 $maxDate = '2025-12-21';
 
 if ($dateFilter) {
-    $stmtCount = $pdo->prepare("SELECT COUNT(*) FROM covoiturages WHERE createur_id = :id AND date_depart = :date");
+    $stmtCount = $pdo->prepare("
+        SELECT COUNT(*) FROM covoiturages c
+        WHERE c.createur_id = :id AND c.date_depart = :date
+    ");
     $stmtCount->bindValue(':id', $userId, PDO::PARAM_INT);
     $stmtCount->bindValue(':date', $dateFilter);
     $stmtCount->execute();
     $total = (int)$stmtCount->fetchColumn();
 
-    $stmt = $pdo->prepare("SELECT * FROM covoiturages WHERE createur_id = :id AND date_depart = :date ORDER BY date_depart ASC, heure_depart ASC LIMIT :limit OFFSET :offset");
+    $stmt = $pdo->prepare("
+        SELECT * FROM covoiturages
+        WHERE createur_id = :id AND date_depart = :date
+        ORDER BY date_depart ASC, heure_depart ASC
+        LIMIT :limit OFFSET :offset
+    ");
     $stmt->bindValue(':id', $userId, PDO::PARAM_INT);
     $stmt->bindValue(':date', $dateFilter);
     $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
@@ -49,24 +76,27 @@ if ($dateFilter) {
     $stmt->execute();
     $trajets = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } else {
-    $stmt = $pdo->prepare("SELECT * FROM covoiturages WHERE createur_id = :id AND date_depart >= :today ORDER BY date_depart ASC, heure_depart ASC LIMIT :limit OFFSET :offset");
+    $stmtCount = $pdo->prepare("
+        SELECT COUNT(*) FROM covoiturages c
+        WHERE c.createur_id = :id AND c.date_depart >= :today
+    ");
+    $stmtCount->bindValue(':id', $userId, PDO::PARAM_INT);
+    $stmtCount->bindValue(':today', $today);
+    $stmtCount->execute();
+    $total = (int) $stmtCount->fetchColumn();
+
+    $stmt = $pdo->prepare("
+        SELECT * FROM covoiturages
+        WHERE createur_id = :id AND date_depart >= :today
+        ORDER BY date_depart ASC, heure_depart ASC
+        LIMIT :limit OFFSET :offset
+    ");
     $stmt->bindValue(':id', $userId, PDO::PARAM_INT);
     $stmt->bindValue(':today', $today);
     $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
     $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
     $stmt->execute();
     $trajets = $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
-
-function libelleStatut($statut) {
-    return match ($statut) {
-        'en_attente' => 'En attente',
-        'en_cours' => 'En cours',
-        'arrivee' => 'Arrivée',
-        'valide' => 'Validé',
-        'litige' => 'Litige',
-        default => ucfirst($statut)
-    };
 }
 ?>
 
@@ -80,7 +110,7 @@ function libelleStatut($statut) {
     <?php endif; ?>
 
     <form method="get" class="mb-3">
-        <input type="date" name="date_filter" class="form-control" min="<?= $today ?>" max="<?= $maxDate ?>" required>
+        <input type="date" name="date_filter" class="form-control" min="<?= $today ?>" max="<?= $maxDate ?>" value="<?= htmlspecialchars($dateFilter ?? '') ?>" required>
         <input type="hidden" name="page" value="1">
         <button type="submit" class="btn btn-sm btn-secondary mt-2">Filtrer</button>
     </form>
@@ -91,16 +121,13 @@ function libelleStatut($statut) {
         <p>Aucun trajet à afficher.</p>
     <?php else: ?>
         <ul class="list-group">
-            <?php foreach ($trajets as $trajet): 
+            <?php foreach ($trajets as $trajet):
                 $heureDepart = new DateTime($trajet['date_depart'] . ' ' . $trajet['heure_depart']);
                 $heureArrivee = new DateTime($trajet['date_depart'] . ' ' . $trajet['heure_arrivee']);
-                $dureeSeconds = $heureArrivee->getTimestamp() - $heureDepart->getTimestamp();
                 $now = new DateTime();
-                $elapsedSeconds = $now->getTimestamp() - $heureDepart->getTimestamp();
-                $seuil50 = $dureeSeconds * 0.1;
 
                 // Gestion des validations après arrivée
-                if ($trajet['statut_trajet'] === 'arrivee') {
+                if (($trajet['statut_trajet'] ?? '') === 'arrivee') {
                     $stmtPassagers = $pdo->prepare("SELECT u.email, u.id AS utilisateur_id FROM participations p JOIN utilisateurs u ON p.utilisateur_id = u.id WHERE p.covoiturage_id = :trajet_id");
                     $stmtPassagers->bindValue(':trajet_id', $trajet['covoiturage_id'], PDO::PARAM_INT);
                     $stmtPassagers->execute();
@@ -126,24 +153,22 @@ function libelleStatut($statut) {
                         <strong><?= htmlspecialchars($trajet['adresse_depart']) ?> → <?= htmlspecialchars($trajet['adresse_arrivee']) ?></strong><br>
                         <?= (new IntlDateFormatter('fr_FR', IntlDateFormatter::FULL, IntlDateFormatter::NONE))->format(new DateTime($trajet['date_depart'])) ?>
                         à <?= htmlspecialchars($trajet['heure_depart']) ?><br>
-                        <span class="badge bg-secondary"><?= libelleStatut($trajet['statut_trajet']) ?></span><br>
+                        <span class="badge <?= classeBadgeStatut($trajet['statut_trajet'] ?? '') ?>">
+                            <?= htmlspecialchars(libelleStatut($trajet['statut_trajet'] ?? '')) ?>
+                        </span><br>
                         <small class="text-muted">
                             ⏱ Durée estimée : <?= $heureDepart->diff($heureArrivee)->format('%hh %Im') ?>
                         </small>
                     </div>
 
-                    <?php if ($trajet['statut_trajet'] === 'en_attente' && $now >= $heureDepart): ?>
+                    <?php if (($trajet['statut_trajet'] ?? '') === 'en_attente' && $now >= $heureDepart): ?>
                         <button class="btn btn-sm btn-primary changer-statut" data-id="<?= $trajet['covoiturage_id'] ?>" data-next="en_cours">Démarrer</button>
 
-                    <?php elseif ($trajet['statut_trajet'] === 'en_cours'): ?>
-                        <?php if ($elapsedSeconds >= $seuil50): ?>
-                            <button class="btn btn-sm btn-warning changer-statut" data-id="<?= $trajet['covoiturage_id'] ?>" data-next="arrivee">En cours (cliquez ici pour terminer)</button>
-                        <?php else: ?>
-                            <button class="btn btn-sm btn-warning" disabled title="Vous pouvez terminer le trajet après au moins 50% de la durée estimée">En cours (fin possible après 50%)</button>
-                        <?php endif; ?>
+                    <?php elseif (($trajet['statut_trajet'] ?? '') === 'en_cours'): ?>
+                        <button class="btn btn-sm btn-success border-subtle changer-statut" data-id="<?= $trajet['covoiturage_id'] ?>" data-next="arrivee">En cours (cliquez ici pour terminer)</button>
 
                     <?php else: ?>
-                        <span class="text-muted">Statut : <?= libelleStatut($trajet['statut_trajet']) ?></span>
+                        <span class="text-muted">Statut : <?= htmlspecialchars(libelleStatut($trajet['statut_trajet'] ?? '')) ?></span>
                     <?php endif; ?>
                 </li>
             <?php endforeach; ?>

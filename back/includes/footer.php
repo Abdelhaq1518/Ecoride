@@ -9,18 +9,41 @@
         </svg>
         <span>2025 Abde-lhake AIT SAID, tous droits réservés.</span>
       </div>
-      <span class="text-muted small ms-md-3"> <a href="mailto:covoitest7@gmail.com" class="text-muted text-decoration-none">covoitest7@gmail.com</a></span>
+      <span class="text-muted small ms-md-3">
+        <a href="mailto:covoitest7@gmail.com" class="text-muted text-decoration-none">covoitest7@gmail.com</a>
+      </span>
     </div>
     <div class="d-flex gap-3">
-      <a href="mentions_legales.php" class="footer-link">Mentions légales</a>" class="footer-link">Mentions légales</a>
-      <a href="#" class="footer-link">Politique de confidentialité</a>
+      <a href="/ecoride/back/public/mentions_legales.php" class="footer-link">Mentions légales</a>
+      <a href="/ecoride/back/public/politique.php" class="footer-link">Politique de confidentialité</a>
     </div>
   </div>
 </footer>
-    <script src="assets/recherche.js"></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
-      crossorigin="anonymous"
-    ></script>
-  </body>
+
+<!-- Script de recherche (ajuste le chemin si nécessaire) -->
+<script src="/ecoride/back/public/assets/recherche.js"></script>
+
+<!-- Bootstrap Bundle (inclut Popper) -->
+<script 
+  src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" 
+  crossorigin="anonymous"
+></script>
+
+
+<script>
+  const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
+  const navbarCollapse = document.querySelector('.navbar-collapse');
+
+  navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      if (navbarCollapse.classList.contains('show')) {
+        const bsCollapse = new bootstrap.Collapse(navbarCollapse, {
+          toggle: true
+        });
+      }
+    });
+  });
+</script>
+
+</body>
 </html>

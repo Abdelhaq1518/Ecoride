@@ -29,6 +29,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $utilisateur = $stmt->fetch();
 
         if ($utilisateur && password_verify($password, $utilisateur['PASSWORD'])) {
+
+            //  Vérification du statut de compte
+            if ($utilisateur['statut_compte'] === 'suspendu') {
+                $_SESSION['erreur'] = "Votre compte a été suspendu. Veuillez contacter le support.";
+                header('Location: ../public/connexion.php');
+                exit;
+            }
+
             // Connexion réussie, stockage en session
             $_SESSION['utilisateur'] = [
                 'id'       => $utilisateur['id'],
@@ -38,9 +46,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ];
 
             $_SESSION['success'] = "Bienvenue " . htmlspecialchars($utilisateur['pseudo']) . " !";
-
             header('Location: ../public/espace_utilisateur.php');
             exit;
+
         } else {
             $_SESSION['erreur'] = "Identifiants incorrects.";
             header('Location: ../public/connexion.php');

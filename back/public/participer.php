@@ -98,14 +98,11 @@ try {
     $stmtMajCredits->bindValue(':id', $user_id, PDO::PARAM_INT);
     $stmtMajCredits->execute();
 
-    // Créditer le chauffeur
-    $stmtCreditConducteur = $pdo->prepare("UPDATE utilisateurs SET credits = credits + :gain WHERE id = :conducteur_id");
-    $stmtCreditConducteur->bindValue(':gain', $trajet['cout_credits'], PDO::PARAM_INT);
-    $stmtCreditConducteur->bindValue(':conducteur_id', $trajet['createur_id'], PDO::PARAM_INT);
-    $stmtCreditConducteur->execute();
-
-    // Enregistrer la participation du passager
-    $stmtInsert = $pdo->prepare("INSERT INTO participations (utilisateur_id, covoiturage_id, date_participation) VALUES (:user_id, :covoiturage_id, NOW())");
+    // Enregistrer la participation du passager avec crédits en attente
+    $stmtInsert = $pdo->prepare("
+        INSERT INTO participations (utilisateur_id, covoiturage_id, date_participation, etat_credit)
+        VALUES (:user_id, :covoiturage_id, NOW(), 'en_attente')
+    ");
     $stmtInsert->bindValue(':user_id', $user_id, PDO::PARAM_INT);
     $stmtInsert->bindValue(':covoiturage_id', $covoiturage_id, PDO::PARAM_INT);
     $stmtInsert->execute();
@@ -117,7 +114,10 @@ try {
     $stmtCheckConducteur->execute();
 
     if ($stmtCheckConducteur->fetchColumn() == 0) {
-        $stmtInsertConducteur = $pdo->prepare("INSERT INTO participations (utilisateur_id, covoiturage_id, date_participation) VALUES (:user_id, :covoiturage_id, NOW())");
+        $stmtInsertConducteur = $pdo->prepare("
+            INSERT INTO participations (utilisateur_id, covoiturage_id, date_participation)
+            VALUES (:user_id, :covoiturage_id, NOW())
+        ");
         $stmtInsertConducteur->bindValue(':user_id', $trajet['createur_id'], PDO::PARAM_INT);
         $stmtInsertConducteur->bindValue(':covoiturage_id', $covoiturage_id, PDO::PARAM_INT);
         $stmtInsertConducteur->execute();
@@ -127,7 +127,7 @@ try {
 
     echo json_encode([
         'success' => true,
-        'message' => 'Votre participation est prise en compte.',
+        'message' => 'Votre participation est prise en compte. Les crédits sont en attente de validation.',
         'places_restantes' => (int)$trajet['places_disponibles'] - 1
     ]);
 } catch (Exception $e) {

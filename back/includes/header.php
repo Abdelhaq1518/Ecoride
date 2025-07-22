@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/ini.php'; 
+require_once __DIR__ . '/ini.php';
 ?>
 
 <!DOCTYPE html>
@@ -17,7 +17,7 @@ require_once __DIR__ . '/ini.php';
   />
 
   <!-- CSS global perso -->
-  <link rel="stylesheet" href="/EcoRide/back/public/assets/css/index.css" />
+  <link rel="stylesheet" href="/ecoride/back/public/assets/css/index.css" />
 
   <?php
   // Inclusion dynamique des CSS spécifiques à la page, si défini
@@ -30,8 +30,8 @@ require_once __DIR__ . '/ini.php';
   else:
     if (basename($_SERVER['SCRIPT_NAME']) === 'covoiturages.php'):
   ?>
-      <link rel="stylesheet" href="/EcoRide/back/public/assets/css/covoiturages.css" />
-      <link rel="stylesheet" href="/EcoRide/back/public/assets/css/espace_utilisateur.css" />
+      <link rel="stylesheet" href="/ecoride/back/public/assets/css/covoiturages.css" />
+      <link rel="stylesheet" href="/ecoride/back/public/assets/css/espace_utilisateur.css" />
   <?php
     endif;
   endif;
@@ -43,8 +43,8 @@ require_once __DIR__ . '/ini.php';
   <header>
     <nav class="navbar navbar-expand-lg navbar-light navbar-custom-warning">
       <div class="container-fluid">
-        <a class="navbar-brand" href="index.php">
-          <img src="assets/img/logo.webp" alt="EcoRide Logo" class="logo-ecoride" />
+        <a class="navbar-brand" href="/ecoride/back/public/index.php">
+          <img src="/ecoride/back/public/assets/img/logo.webp" alt="EcoRide Logo" class="logo-ecoride" />
         </a>
         <button
           class="navbar-toggler"
@@ -63,19 +63,19 @@ require_once __DIR__ . '/ini.php';
             <li class="nav-item">
               <a 
                 class="nav-eco nav-link px-4 <?= basename($_SERVER['SCRIPT_NAME']) === 'covoiturages.php' ? 'active' : '' ?>" 
-                href="covoiturages.php"
+                href="/ecoride/back/public/covoiturages.php"
               >Les covoiturages</a>
             </li>
             <li class="nav-item">
               <a 
                 class="nav-eco nav-link px-4 <?= basename($_SERVER['SCRIPT_NAME']) === 'connexion.php' ? 'active' : '' ?>" 
-                href="connexion.php"
+                href="/ecoride/back/public/connexion.php"
               >Connexion</a>
             </li>
             <li class="nav-item">
               <a 
                 class="nav-eco nav-link px-4 <?= basename($_SERVER['SCRIPT_NAME']) === 'contact.php' ? 'active' : '' ?>" 
-                href="contact.php"
+                href="/ecoride/back/public/contact.php"
               >Contact</a>
             </li>
 
@@ -83,7 +83,7 @@ require_once __DIR__ . '/ini.php';
               <li class="nav-item">
                 <a 
                   class="nav-eco nav-link px-4 <?= basename($_SERVER['SCRIPT_NAME']) === 'espace_utilisateur.php' ? 'active' : '' ?>" 
-                  href="espace_utilisateur.php"
+                  href="/ecoride/back/public/espace_utilisateur.php"
                 >Mon espace</a>
               </li>
             <?php endif; ?>
@@ -100,5 +100,7 @@ require_once __DIR__ . '/ini.php';
     crossorigin="anonymous"
   ></script>
 
-  <!-- Routing script -->
-  <script src="/EcoRide/back/public/assets/routages.js"></script>
+  <!-- Routing script et recherche.js -->
+<script src="/ecoride/back/public/assets/routages.js"></script>
+<script src="/ecoride/back/public/assets/recherche.js"></script>
+

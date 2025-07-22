@@ -1,5 +1,7 @@
 <?php
 session_start();
+$pageStyles = ['assets/css/espace_utilisateur.css'];
+require_once __DIR__ . '/../includes/header.php';
 require_once __DIR__ . '/../dev/db.php';
 require_once __DIR__ . '/../includes/verify_csrf.php';
 
@@ -9,14 +11,24 @@ if (!isset($_SESSION['utilisateur'])) {
 }
 
 $stmt = $pdo->prepare("
-    SELECT r.libelle
+    SELECT r.role_id, r.libelle
     FROM utilisateur_roles ur
     JOIN roles r ON ur.role_id = r.role_id
     WHERE ur.utilisateur_id = :id
 ");
 $stmt->bindValue(':id', $_SESSION['utilisateur']['id'], PDO::PARAM_INT);
 $stmt->execute();
-$roles = $stmt->fetchAll(PDO::FETCH_COLUMN);
+$rolesData = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Extraire les libellés et role_ids dans des arrays séparés
+$roles = array_column($rolesData, 'libelle');
+$roleIds = array_column($rolesData, 'role_id');
+
+// Si l'utilisateur a le rôle employé (role_id = 4), on le redirige vers espace_employe.php
+if (in_array(4, $roleIds)) {
+    header('Location: espace_employe.php');
+    exit;
+}
 
 $stmtVehicules = $pdo->prepare("SELECT * FROM voiture WHERE utilisateur_id = :id");
 $stmtVehicules->bindValue(':id', $_SESSION['utilisateur']['id'], PDO::PARAM_INT);
@@ -27,14 +39,14 @@ $stmtPrefs = $pdo->prepare("SELECT * FROM preferences_conducteur WHERE utilisate
 $stmtPrefs->bindValue(':id', $_SESSION['utilisateur']['id'], PDO::PARAM_INT);
 $stmtPrefs->execute();
 $preferences = $stmtPrefs->fetch(PDO::FETCH_ASSOC);
+
+
 ?>
 
-<?php include __DIR__ . '/../includes/header.php'; ?>
-<link rel="stylesheet" href="assets/css/espace_utilisateur.css">
 <body>
 <div class="full-height-container">
     <!-- Menu latéral -->
-     <nav class="sidebar_espace p-3" style="min-width: 220px; min-height: 100vh;">
+    <nav class="sidebar_espace p-3" style="min-width: 220px; min-height: 100vh;">
         <h5 class="mb-4">Mon espace</h5>
         <ul class="nav flex-column">
             <li class="nav-item">
@@ -56,19 +68,21 @@ $preferences = $stmtPrefs->fetch(PDO::FETCH_ASSOC);
             <li class="nav-item">
                 <a href="historique.php" class="nav-link">Historique</a>
             </li>
+            <li class="nav-item">
+                <a href="deconnexion.php" class="nav-link text-dark">Se déconnecter</a>
+            </li>
         </ul>
     </nav>
-
 
     <!-- Contenu principal -->
     <main class="p-4 bg-eco-light">
         <?php if (isset($_SESSION['success'])): ?>
-            <div class="alert alert-success"><?= $_SESSION['success'] ?></div>
+            <div class="alert alert-success"><?= htmlspecialchars($_SESSION['success']) ?></div>
             <?php unset($_SESSION['success']); ?>
         <?php endif; ?>
 
         <?php if (isset($_SESSION['erreur'])): ?>
-            <div class="alert alert-danger"><?= $_SESSION['erreur'] ?></div>
+            <div class="alert alert-danger"><?= htmlspecialchars($_SESSION['erreur']) ?></div>
             <?php unset($_SESSION['erreur']); ?>
         <?php endif; ?>
 
