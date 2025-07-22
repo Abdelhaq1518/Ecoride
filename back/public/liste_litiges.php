@@ -6,13 +6,14 @@ require_once __DIR__ . '/../dev/vendor/autoload.php';
 use MongoDB\Client;
 
 $mongo = new Client("mongodb://localhost:27017");
-$collection = $mongo->ecoride->litiges_covoiturage;
+$collection = $mongo->ecoride->litiges;
 
-// Récupération des litiges (tri par date descendante)
-$litiges = $collection->find([], ['sort' => ['statut' => 1, 'date' => -1]])->toArray();
+// Récupération des litiges (tri par statut asc puis date desc)
+$litiges = $collectiboon->find([], ['sort' => ['statut' => 1, 'date' => -1]])->toArray();
 ?>
+<body>
+<link rel="stylesheet" href="/EcoRide/back/public/assets/css/index.css">
 
-<link rel="stylesheet" href="/EcoRide/back/public/assets/css/espace_employe.css">
 
 <div class="container mt-5 gestion-avis-wrapper">
     <h1>Gestion des litiges</h1>
@@ -28,7 +29,7 @@ $litiges = $collection->find([], ['sort' => ['statut' => 1, 'date' => -1]])->toA
     <?php if (empty($litiges)): ?>
         <p>Aucun litige trouvé.</p>
     <?php else: ?>
-        <table class="tableau-avis">
+        <table class="tableau-beige">
             <thead>
                 <tr>
                     <th>Note</th>
@@ -39,7 +40,16 @@ $litiges = $collection->find([], ['sort' => ['statut' => 1, 'date' => -1]])->toA
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($litiges as $litige): ?>
+                <?php
+                $ids_affiches = [];
+                foreach ($litiges as $litige):
+                    // Ignore les doublons sur covoiturage_id
+                    $id = (string) ($litige['covoiturage_id'] ?? '');
+                    if ($id === '' || in_array($id, $ids_affiches, true)) {
+                        continue;
+                    }
+                    $ids_affiches[] = $id;
+                ?>
                     <tr>
                         <td><?= htmlspecialchars($litige['note'] ?? '') ?></td>
                         <td><?= nl2br(htmlspecialchars($litige['commentaire'] ?? '')) ?></td>
@@ -70,3 +80,4 @@ $litiges = $collection->find([], ['sort' => ['statut' => 1, 'date' => -1]])->toA
 </div>
 
 <?php require_once __DIR__ . '/../includes/footer.php'; ?>
+</body>

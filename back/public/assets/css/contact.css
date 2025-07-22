@@ -1,0 +1,23 @@
+/*Formulaire de contact dans le respect de notre charte*/
+
+.form-block {
+  background-color: #f4efd7;
+  padding: 2rem;
+  border-radius: 2rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  flex-grow: 1;
+  height: auto;
+  align-self: stretch;
+  box-sizing: border-box;
+}
+.btn-custom {
+  background-color: #a8895c;
+  color: #ede0c8;
+}
+.btn-custom:hover {
+  background-color: #93784f;
+  color: #fff;
+}

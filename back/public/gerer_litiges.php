@@ -16,7 +16,7 @@ $action = $_POST['action'];
 
 try {
     $mongo = new Client("mongodb://localhost:27017");
-    $collection = $mongo->ecoride->litiges_covoiturage;
+    $collection = $mongo->ecoride->litiges;
 
     if (!ObjectId::isValid($id)) {
         $_SESSION['error'] = "ID invalide.";

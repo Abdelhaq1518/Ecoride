@@ -41,17 +41,16 @@ $avisNonValides = $collection->find(['est_valide' => false])->toArray();
 // Récupérer les covoiturages signalés en litige (MySQL)
 $stmtLitiges = $pdo->prepare("
     SELECT 
-        c.covoiturage_id, 
-        c.adresse_depart, 
-        c.adresse_arrivee, 
-        c.date_depart, 
-        c.heure_depart, 
-        c.heure_arrivee
-    FROM covoiturages c
-    INNER JOIN statuts_trajet st ON c.statut_trajet = st.code
-    WHERE st.code = 'litige'
-    ORDER BY c.date_depart DESC
-");
+        covoiturage_id, 
+        adresse_depart, 
+        adresse_arrivee, 
+        date_depart, 
+        heure_depart, 
+        heure_arrivee
+    FROM covoiturages
+    WHERE statut_trajet = 'litige'
+    ORDER BY date_depart DESC
+"); 
 $stmtLitiges->execute();
 $trajetsLitiges = $stmtLitiges->fetchAll(PDO::FETCH_ASSOC);
 
