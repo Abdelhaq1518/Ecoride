@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once 'config.php'; 
 require_once __DIR__ . '/../includes/header.php';
 require_once __DIR__ . '/../dev/vendor/autoload.php';
 
@@ -12,7 +13,7 @@ $collection = $mongo->ecoride->litiges;
 $litiges = $collectiboon->find([], ['sort' => ['statut' => 1, 'date' => -1]])->toArray();
 ?>
 <body>
-<link rel="stylesheet" href="/EcoRide/back/public/assets/css/index.css">
+<link rel="stylesheet" href="<BASE_URL>/assets/css/index.css">
 
 
 <div class="container mt-5 gestion-avis-wrapper">

@@ -22,7 +22,7 @@ $stmtRoles->execute([':id' => $userId]);
 if (!$stmtRoles->fetchColumn()) {
     require_once __DIR__ . '/../includes/header.php';
     echo "
-    <div class='container mt-5'>
+    <div class='full-height-container'>
         <div class='alert alert-danger'>
             <h4> Accès interdit</h4>
             <p>Seuls les employés peuvent accéder à cette page.</p>
@@ -76,7 +76,7 @@ require_once __DIR__ . '/../includes/header.php';
         </ul>
     </nav>
 
-    <main class="p-4 bg-eco-light flex-grow-1">
+    <main class="p-4 bg-eco-light flex-grow-1 d-flex flex-column">
         <h1>Espace Employé</h1>
 
         <section>

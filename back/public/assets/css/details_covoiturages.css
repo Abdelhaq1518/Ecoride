@@ -1,5 +1,42 @@
-/*Trajets disponibles*/
+/* Badges personnalisés */
+.badge-custom {
+  display: inline-block;
+  padding: 0.35rem 0.65rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 0.5rem;
+}
 
+/* Couleurs des badges spécifiques */
+
+.badge-eco {
+  color: #0c5d15 !important;
+  background-color: #e2f3e7;
+}
+
+.badge-standard {
+  color: #4a4a4a;
+  background-color: #dbe4ec; /* Bleu très clair/gris bleuté */
+}
+
+.badge-places {
+  color: #7b75f0;
+  background-color: #eae9fd;
+}
+
+.badge-credits {
+  color: #911111;
+  background-color: #fae1e1;
+}
+.badges-info .badge-complet {
+  background-color: #1a1a1a !important;
+  color: #cccccc !important;
+}
+/*Trajets disponibles*/
 .trajet-result {
   background-color: #f4efd7;
   border: 1px solid #ccc;
@@ -17,47 +54,7 @@
   flex-wrap: wrap;
   gap: 2rem;
 }
-/*badges*/
 
-.badges-info .badge {
-  font-size: 0.85rem;
-  padding: 0.4rem 0.7rem;
-  border-radius: 0.5rem;
-  background-color: #f1ebeb;
-}
-
-.badge-eco {
-  color: #0c5d15;
-  background-color: #e2f3e7;
-  border-radius: 0.5rem;
-  padding: 0.4rem 0.7rem;
-  font-size: 0.85rem;
-}
-
-.badge-standard {
-  color: #4a4a4a;
-  background-color: #dbe4ec;
-  border-radius: 0.5rem;
-  padding: 0.4rem 0.7rem;
-  font-size: 0.85rem;
-}
-
-.badge-places {
-  color: #7b75f0;
-}
-
-.badge-credits {
-  color: #911111;
-}
-
-.badge.badge-complet {
-  background-color: #1a1a1a !important;
-  color: #cccccc !important;
-  border-radius: 0.5rem;
-  padding: 0.4rem 0.7rem;
-  font-size: 0.85rem;
-  display: inline-block;
-}
 /*Section conducteur*/
 
 .conducteur {

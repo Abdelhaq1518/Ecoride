@@ -4902,7 +4902,7 @@ fieldset:disabled .btn {
   --bs-pagination-border-radius: var(--bs-border-radius-sm);
 }
 
-.badge {
+/*.badge {
   --bs-badge-padding-x: 0.65em;
   --bs-badge-padding-y: 0.35em;
   --bs-badge-font-size: 0.75em;
@@ -4928,7 +4928,7 @@ fieldset:disabled .btn {
   position: relative;
   top: -1px;
 }
-
+*/
 .alert {
   --bs-alert-bg: transparent;
   --bs-alert-padding-x: 1rem;
@@ -12443,19 +12443,21 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
-  display: flex;
-  flex-direction: column;
 }
 
-/* Contenu principal doit prendre l’espace restant */
-main {
+body > .page-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+body > .page-container main {
   flex: 1;
 }
 
+/* Contenu principal doit prendre l’espace restant */
+
 /* Footer toujours en bas */
-footer {
-  margin-top: auto;
-}
 
 body {
   background-color: #89c4a3 !important;

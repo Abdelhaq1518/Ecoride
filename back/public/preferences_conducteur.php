@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once 'config.php'; 
 require_once __DIR__ . '/../dev/db.php';
 require_once __DIR__ . '/../includes/verify_csrf.php';
 
@@ -8,7 +9,7 @@ if (!isset($_SESSION['utilisateur'])) {
     exit;
 }
 
-// ✅ Vérifie que l'utilisateur est chauffeur ou combo
+//  Vérifie que l'utilisateur est chauffeur ou combo
 $stmt = $pdo->prepare("
     SELECT r.libelle
     FROM utilisateur_roles ur
@@ -63,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 ?>
 
 <?php include __DIR__ . '/../includes/header.php'; ?>
-<link rel="stylesheet" href="assets/css/espace_utilisateur.css">
+<link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/espace_utilisateur.css">
 
 <div class="container mt-4">
     <h2 class="mb-4">Mes préférences</h2>

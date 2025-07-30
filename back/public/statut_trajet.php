@@ -2,9 +2,10 @@
 session_start();
 date_default_timezone_set('Europe/Paris');
 require_once __DIR__ . '/../includes/header.php';
-echo '<link rel="stylesheet" href="/EcoRide/back/public/assets/css/espace_utilisateur.css">';
 require_once __DIR__ . '/../dev/db.php';
 require_once __DIR__ . '/../dev/mailer.php';
+require_once 'config.php'; 
+
 
 if (!isset($_SESSION['utilisateur']['id'])) {
     echo "<p>Vous devez être connecté pour accéder à cette page.</p>";
@@ -38,10 +39,10 @@ function libelleStatut($code) {
 
 function classeBadgeStatut($code) {
     return match ($code) {
-        'en_attente' => 'bg-warning text-dark',
-        'en_cours'   => 'bg-primary',
-        'arrivee'    => 'bg-success',
-        'annulé'     => 'bg-danger',
+        'en_attente' => 'badge-avenir text-dark',
+        'en_cours'   => 'badge-encours',
+        'arrivee'    => 'badge-arrivee',
+        'annulé'     => 'badge-annule',
         default      => 'bg-secondary',
     };
 }
@@ -99,8 +100,11 @@ if ($dateFilter) {
     $trajets = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 ?>
+  <body>
+    <div class="page-container"> 
+    <main class="statut-card">
 
-<div class="container mt-5 mb-5">
+    <div class="container mt-5 mb-5">
     <h2>Démarrer / Arrêter un covoiturage</h2>
 
     <?php if ($dateFilter): ?>
@@ -148,7 +152,7 @@ if ($dateFilter) {
                     }
                 }
             ?>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
+                <li class="statut-card list-group-item">
                     <div>
                         <strong><?= htmlspecialchars($trajet['adresse_depart']) ?> → <?= htmlspecialchars($trajet['adresse_arrivee']) ?></strong><br>
                         <?= (new IntlDateFormatter('fr_FR', IntlDateFormatter::FULL, IntlDateFormatter::NONE))->format(new DateTime($trajet['date_depart'])) ?>
@@ -162,7 +166,7 @@ if ($dateFilter) {
                     </div>
 
                     <?php if (($trajet['statut_trajet'] ?? '') === 'en_attente' && $now >= $heureDepart): ?>
-                        <button class="btn btn-sm btn-primary changer-statut" data-id="<?= $trajet['covoiturage_id'] ?>" data-next="en_cours">Démarrer</button>
+                        <button class="btn-demarrer changer-statut" data-id="<?= $trajet['covoiturage_id'] ?>" data-next="en_cours">Démarrer</button>
 
                     <?php elseif (($trajet['statut_trajet'] ?? '') === 'en_cours'): ?>
                         <button class="btn btn-sm btn-success border-subtle changer-statut" data-id="<?= $trajet['covoiturage_id'] ?>" data-next="arrivee">En cours (cliquez ici pour terminer)</button>
@@ -212,5 +216,7 @@ document.querySelectorAll('.changer-statut').forEach(button => {
     });
 });
 </script>
-
+</main>
 <?php require_once __DIR__ . '/../includes/footer.php'; ?>
+</div>
+</body>

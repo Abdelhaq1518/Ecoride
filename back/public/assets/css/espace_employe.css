@@ -1,12 +1,18 @@
-body,
-html {
-  min-height: 100vh;
+/*Fond général et sticky footer*/
+
+html,
+body {
+  height: 100%;
   margin: 0;
-  padding: 0;
-  font-family: system-ui, sans-serif;
-  background-color: #fcfbf7;
+}
+
+main {
+  flex: 1;
+}
+
+.full-height-container {
   display: flex;
-  flex-direction: column;
+  min-height: 100vh;
 }
 
 /* Pour que le footer reste en bas */

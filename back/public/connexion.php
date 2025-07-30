@@ -2,10 +2,12 @@
 require_once __DIR__ . '/../includes/header.php';
 require_once __DIR__ . '/../includes/ini.php';
 require_once __DIR__ . '/../includes/csrf_token.php';
+
 ?>
 
+
 <!-- Feuille de style spécifique -->
-<link rel="stylesheet" href="assets/css/connexion.css">
+
 
 <main class="container py-5">
   <?php if (isset($_SESSION['success'])): ?>

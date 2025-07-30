@@ -1,5 +1,13 @@
 <?php
 require_once __DIR__ . '/ini.php';
+require_once __DIR__ . '/../public/config.php';
+
+// Déduction du nom de la page courante (ex: espace_utilisateur)
+$currentPage = basename($_SERVER['SCRIPT_NAME'], '.php');
+
+// Déduction du chemin CSS associé
+$customCssPath = BASE_URL . "/assets/css/{$currentPage}.css";
+$physicalCssPath = __DIR__ . '/../public/assets/css/' . $currentPage . '.css';
 ?>
 
 <!DOCTYPE html>
@@ -16,26 +24,15 @@ require_once __DIR__ . '/ini.php';
     crossorigin="anonymous" 
   />
 
-  <!-- CSS global perso -->
-  <link rel="stylesheet" href="/ecoride/back/public/assets/css/index.css" />
+  <!-- CSS global personnalisé -->
+  <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/index.css" />
 
-  <?php
-  // Inclusion dynamique des CSS spécifiques à la page, si défini
-  if (!empty($pageStyles) && is_array($pageStyles)):
-      foreach ($pageStyles as $cssFile):
-  ?>
-      <link rel="stylesheet" href="<?= htmlspecialchars($cssFile) ?>" />
-  <?php
-      endforeach;
-  else:
-    if (basename($_SERVER['SCRIPT_NAME']) === 'covoiturages.php'):
-  ?>
-      <link rel="stylesheet" href="/ecoride/back/public/assets/css/covoiturages.css" />
-      <link rel="stylesheet" href="/ecoride/back/public/assets/css/espace_utilisateur.css" />
-  <?php
-    endif;
-  endif;
-  ?>
+  <!-- CSS spécifique à la page (si le fichier existe) -->
+  <?php if (file_exists($physicalCssPath)) : ?>
+    <link rel="stylesheet" href="<?= htmlspecialchars($customCssPath) ?>">
+  <?php endif; ?>
+</head>
+<body>
 
   <title>EcoRide</title>
 </head>

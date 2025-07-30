@@ -3,6 +3,7 @@ session_start();
 require_once __DIR__ . '/../dev/db.php';
 require_once __DIR__ . '/../includes/verify_csrf.php';
 require_once __DIR__ . '/../dev/vendor/autoload.php';
+require_once 'config.php'; 
 
 use MongoDB\Client;
 use MongoDB\BSON\UTCDateTime;
@@ -126,7 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $validation) {
 ?>
 
 <?php include __DIR__ . '/../includes/header.php'; ?>
-<link rel="stylesheet" href="/EcoRide/back/public/assets/css/espace_utilisateur.css">
+<link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/espace_utilisateur.css">
 
 <div class="container mt-5">
     <?php if ($erreur): ?>

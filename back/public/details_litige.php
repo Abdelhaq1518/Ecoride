@@ -2,7 +2,8 @@
 session_start();
 
 // Imports
-$pageStyles = ['assets/css/details_covoiturages.css'];
+require_once 'config.php'; 
+$pageStyles = ['BASE_URL .assets/css/details_covoiturages.css'];
 require_once __DIR__ . '/../dev/db.php';
 require_once __DIR__ . '/../includes/header.php';
 require_once __DIR__ . '/../dev/vendor/autoload.php'; // MongoDB

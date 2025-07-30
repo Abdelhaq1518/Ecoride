@@ -1,5 +1,5 @@
 <?php
-$pageStyles = ['assets/css/contact.css'];
+require_once 'config.php'; 
 require_once __DIR__ . '/../includes/header.php';
 
 // Traitement du formulaire

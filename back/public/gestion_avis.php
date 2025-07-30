@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once 'config.php'; 
 require_once __DIR__ . '/../dev/vendor/autoload.php';
 require_once __DIR__ . '/../includes/header.php';
 require_once __DIR__ . '/../dev/mongo_doublons.php';
@@ -44,7 +45,7 @@ $avisCursor = $collection->find(
 $avis = $avisCursor->toArray();
 ?>
 <body>
-<link rel="stylesheet" href="/EcoRide/back/public/assets/css/espace_employe.css">
+<link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/espace_employe.css">
 
 <div class="container mt-5 gestion-avis-wrapper">
     <h1>Gestion des avis</h1>

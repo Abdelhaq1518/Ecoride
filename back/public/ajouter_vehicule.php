@@ -51,13 +51,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($exists) {
         // Mise à jour
         $stmtUpdate = $pdo->prepare("UPDATE preferences_conducteur
-                                     SET fumeur = :fumeur, animaux = :animaux, musique = :musique,
-                                         discussion = :discussion, autres_preferences = :autres
-                                     WHERE utilisateur_id = :uid");
+         SET fumeur = :fumeur, animaux = :animaux, musique = :musique,
+        discussion = :discussion, autres_preferences = :autres
+        WHERE utilisateur_id = :uid");
     } else {
         // Insertion
         $stmtUpdate = $pdo->prepare("INSERT INTO preferences_conducteur (utilisateur_id, fumeur, animaux, musique, discussion, autres_preferences)
-                                     VALUES (:uid, :fumeur, :animaux, :musique, :discussion, :autres)");
+        VALUES (:uid, :fumeur, :animaux, :musique, :discussion, :autres)");
     }
 
     $stmtUpdate->bindValue(':uid', $userId, PDO::PARAM_INT);

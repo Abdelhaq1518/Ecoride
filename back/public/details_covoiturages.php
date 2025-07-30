@@ -1,6 +1,6 @@
 <?php
 session_start();
-$pageStyles = ['assets/css/details_covoiturages.css'];
+require_once 'config.php'; 
 require_once __DIR__ . '/../includes/header.php';
 require_once __DIR__ . '/../dev/db.php';
 require_once __DIR__ . '/../dev/vendor/autoload.php';
@@ -87,10 +87,10 @@ if (count($idsUtilisateurs) > 0) {
                 <p>Arrivée estimée à <?= htmlspecialchars($trajet['heure_arrivee']) ?></p>
                 <div class="badges-info d-flex flex-wrap gap-2 mt-2">
                     <span class="badge <?= $classe_badge ?>"><?= ucfirst(htmlspecialchars($type_raw)) ?></span>
-                    <span class="badge badge-places"><?= (int)$trajet['places_disponibles'] ?> place(s)</span>
-                    <span class="badge badge-credits"><?= (int)$trajet['cout_credits'] ?> crédits</span>
+                    <span class="badge-custom badge-places"><?= (int)$trajet['places_disponibles'] ?> place(s)</span>
+                    <span class="badge-custom badge-credits"><?= (int)$trajet['cout_credits'] ?> crédits</span>
                     <?php if ((int)$trajet['places_disponibles'] <= 0): ?>
-                        <span class="badge badge-complet">Complet</span>
+                        <span class="badge-custom badge-complet">Complet</span>
                     <?php endif; ?>
                 </div>
             </div>

@@ -217,6 +217,13 @@ select.form-control {
   pointer-events: none;
 }
 /*Historique covoiturages*/
+.historique.list-group-item {
+  background-color: #f4efd7;
+  border: 1px solid #d7c0a1;
+  color: #242014;
+  border-radius: 1rem;
+  transition: background-color 0.3s ease;
+}
 .btn-annuler {
   background-color: #d4afa0;
   color: #5a3e31;
@@ -325,5 +332,56 @@ select.form-control {
 }
 /*Annuler/démarrer un covoiturage*/
 .btn-demarrer {
-  background-color: #a5c89a;
+  background-color: #639a53 !important;
+  border-radius: 0.5rem;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+/*****Statut trajet******/
+
+.statut-card.list-group-item {
+  background-color: #f4efd7;
+  border: 1px solid #d7c0a1;
+  color: #242014;
+  border-radius: 1rem;
+  transition: background-color 0.3s ease;
+}
+/*badges trajets*/
+
+.badge-custom {
+  display: inline-block;
+  padding: 0.35rem 0.65rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 0.5rem;
+}
+
+/* Couleurs des badges spécifiques */
+
+.badge-arrivee {
+  color: #0c5d15 !important;
+  background-color: #e2f3e7;
+}
+
+.badge-encours {
+  color: #4a4a4a;
+  background-color: #dbe4ec; /* Bleu très clair/gris bleuté */
+}
+
+.badge-avenir {
+  color: #7b75f0;
+  background-color: #eae9fd;
+}
+
+.badge-annule {
+  color: #911111;
+  background-color: #fae1e1;
 }

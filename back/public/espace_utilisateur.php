@@ -1,6 +1,6 @@
 <?php
 session_start();
-$pageStyles = ['assets/css/espace_utilisateur.css'];
+require_once 'config.php'; 
 require_once __DIR__ . '/../includes/header.php';
 require_once __DIR__ . '/../dev/db.php';
 require_once __DIR__ . '/../includes/verify_csrf.php';

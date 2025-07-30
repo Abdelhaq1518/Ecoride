@@ -1,8 +1,8 @@
 <?php
 session_start();
-
+require_once 'config.php'; 
 require_once __DIR__ . '/../dev/vendor/autoload.php';
-$pageStyles = ['/EcoRide/back/public/assets/css/espace_employe.css'];
+$pageStyles = ['BASE_URL ./assets/css/espace_employe.css'];
 require_once __DIR__ . '/../includes/header.php';
 require_once __DIR__ . '/../dev/mongo_doublons.php';
 
@@ -32,7 +32,7 @@ $options = ['sort' => ['date_signalement' => -1], 'limit' => 5];
 $litiges = $collection->find($filter, $options)->toArray();
 ?>
 
-<link rel="stylesheet" href="/EcoRide/back/public/assets/css/espace_employe.css">
+
 
 <div class="container mt-5 gestion-litiges-wrapper">
     <h1 class="mb-4">Gestion des litiges</h1>

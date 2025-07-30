@@ -1,7 +1,8 @@
 <?php
 session_start();
+
+require_once 'config.php'; 
 require_once __DIR__ . '/../includes/header.php';
-echo '<link rel="stylesheet" href="/EcoRide/back/public/assets/css/espace_utilisateur.css">';
 require_once __DIR__ . '/../dev/db.php';
 
 if (!isset($_SESSION['utilisateur']['id'])) {
@@ -98,7 +99,7 @@ function renderPagination($total, $limit, $currentPage, $paramName) {
 }
 ?>
 
-<main class="container mt-5">
+<main class="container mt-5 historique-card">
     <?php if ($dateFilter): ?>
         <p class="text-muted">Filtré par date : <?= (new IntlDateFormatter('fr_FR', IntlDateFormatter::FULL, IntlDateFormatter::NONE))->format(new DateTime($dateFilter)) ?>
             <a href="historique.php" class="btn btn-sm btn-outline-secondary ms-2">Réinitialiser</a>
@@ -122,7 +123,7 @@ function renderPagination($total, $limit, $currentPage, $paramName) {
         <?php else: ?>
             <ul class="list-group mb-3">
                 <?php foreach ($trajetsChauffeur as $trajet): ?>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <li class="historique list-group-item d-flex justify-content-between align-items-center">
                         <div>
                             <strong><?= htmlspecialchars($trajet['adresse_depart']) ?> → <?= htmlspecialchars($trajet['adresse_arrivee']) ?></strong><br>
                             <?= (new IntlDateFormatter('fr_FR', IntlDateFormatter::FULL, IntlDateFormatter::NONE))->format(new DateTime($trajet['date_depart'])) ?>
@@ -157,7 +158,7 @@ function renderPagination($total, $limit, $currentPage, $paramName) {
         <?php else: ?>
             <ul class="list-group mb-3">
                 <?php foreach ($trajetsPassager as $trajet): ?>
-                    <li class="list-group-item">
+                    <li class="historique list-group-item">
                         <strong><?= htmlspecialchars($trajet['adresse_depart']) ?> → <?= htmlspecialchars($trajet['adresse_arrivee']) ?></strong><br>
                         <?= (new IntlDateFormatter('fr_FR', IntlDateFormatter::FULL, IntlDateFormatter::NONE))->format(new DateTime($trajet['date_depart'])) ?>
                         à <?= htmlspecialchars($trajet['heure_depart']) ?>

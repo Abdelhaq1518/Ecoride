@@ -10,7 +10,7 @@ $stmtVehicules->bindValue(':uid', $_SESSION['utilisateur']['id'], PDO::PARAM_INT
 $stmtVehicules->execute();
 $vehicules = $stmtVehicules->fetchAll(PDO::FETCH_ASSOC);
 ?>
-<link rel="stylesheet" href="/EcoRide/back/public/assets/css/espace_utilisateur.css">';
+<link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/espace_utilisateur.css">';
 <div class="container mt-5">
     <h2>Ajouter un trajet</h2>
 

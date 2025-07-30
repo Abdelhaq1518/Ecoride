@@ -1,5 +1,5 @@
 <?php
-$pageStyles = ['assets/css/politique.css']; // tu peux créer ce fichier pour une mise en forme personnalisée
+ // tu peux créer ce fichier pour une mise en forme personnalisée
 require_once __DIR__ . '/../includes/header.php';
 ?>
 
